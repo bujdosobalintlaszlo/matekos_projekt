@@ -1,0 +1,55 @@
+CREATE DATABASE Kozgaz_matek_teszt CHARACTER hungarian_ci;
+
+
+CREATE TABLE felhasznalok (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    jelszo VARCHAR(150) NOT NULL,
+    felhasznaloNev VARCHAR(40) NOT NULL,
+    jog INTEGER NOT NULL,
+    osztaly VARCHAR(3)
+);
+
+CREATE TABLE feladatok (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    temakor VARCHAR(20) NOT NULL,
+    megoldas VARCHAR(150) NOT NULL,
+    nehezseg INTEGER NOT NULL,
+    pontszam INTEGER NOT NULL
+);
+
+CREATE TABLE feladatsor (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    feladatokId INTEGER NOT NULL,
+    idoKorlat INTEGER NOT NULL,
+    dolgozatE INTEGER NOT NULL,
+    TanarId INTEGER NOT NULL,
+    FOREIGN KEY (feladatokId) REFERENCES feladatok(id),
+    FOREIGN KEY (TanarId) REFERENCES felhasznalok(id)
+);
+
+CREATE TABLE felhaszEsFeladKapcs (
+    felhasznaloId INTEGER NOT NULL,
+    feladatId INTEGER NOT NULL,
+    megoldIdo TIMESTAMP NOT NULL,
+    PRIMARY KEY (felhasznaloId, feladatId),
+    FOREIGN KEY (felhasznaloId) REFERENCES felhasznalok(id),
+    FOREIGN KEY (feladatId) REFERENCES feladatok(id)
+);
+
+CREATE TABLE FeladatEsFelhasznaloKapcs (
+    feladatId INTEGER NOT NULL,
+    felhasznaloId INTEGER NOT NULL,
+    PRIMARY KEY (feladatId, felhasznaloId),
+    FOREIGN KEY (feladatId) REFERENCES feladatok(id),
+    FOREIGN KEY (felhasznaloId) REFERENCES felhasznalok(id)
+);
+
+CREATE TABLE FeladatEsFeladatsorKapcs (
+    feladatId INTEGER NOT NULL,
+    feladatsorId INTEGER NOT NULL,
+    PRIMARY KEY (feladatId, feladatsorId),
+    FOREIGN KEY (feladatId) REFERENCES feladatok(id),
+    FOREIGN KEY (feladatsorId) REFERENCES feladatsor(id)
+);
+
