@@ -1,1 +1,1 @@
-# matekos_projekt
+# Csapattagok: Mózes Bence, Bujdosó Bálint
