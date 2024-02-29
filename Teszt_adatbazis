@@ -38,10 +38,10 @@ CREATE TABLE felhaszEsFeladKapcs (
 );
 
 CREATE TABLE FeladatEsFelhasznaloKapcs (
-    feladatId INTEGER NOT NULL,
+    feladatsorId INTEGER NOT NULL,
     felhasznaloId INTEGER NOT NULL,
     PRIMARY KEY (feladatId, felhasznaloId),
-    FOREIGN KEY (feladatId) REFERENCES feladatok(id),
+    FOREIGN KEY (feladatsorId) REFERENCES feladatsor(id),
     FOREIGN KEY (felhasznaloId) REFERENCES felhasznalok(id)
 );
 
