@@ -1,0 +1,7 @@
+#regBtn{
+    cursor: pointer;
+    
+}
+#regBtn:hover{
+    background-color: lightblue;
+}
