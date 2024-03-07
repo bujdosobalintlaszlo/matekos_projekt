@@ -26,3 +26,10 @@ if (regExpPw.test(pw)) {
 select f.jog
 from felhasznalo f
 where f.email = rege
+
+select count(*) as darab
+from feladatok f
+
+select
+from
+where
