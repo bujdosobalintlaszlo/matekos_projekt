@@ -5,3 +5,24 @@
 #regBtn:hover{
     background-color: lightblue;
 }
+select f.felhasznaloNev
+from felhasznalok f
+where f.email==rege
+
+
+if (regExpPw.test(pw)) {
+    hash(pw).then((hash)=> {
+        let sql="select * from "+
+				"felhasznalok f "+
+				"where f.jelszo='"+hash+"'";
+        console.log(sql);
+        LekerdezesEredmenye(sql).then((valasz)=>{
+            console.log(valasz);
+        });
+    })
+} 
+
+
+select f.jog
+from felhasznalo f
+where f.email = rege
