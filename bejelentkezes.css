@@ -1,0 +1,121 @@
+#kartya
+{
+    background-color: rgb(81, 142, 212);
+    border-radius: 10px;
+    align-items: center;
+    color: white;
+    overflow-y: auto;
+    height: 80vh;
+}
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+#bejelentkezes
+{
+    color: white;
+    text-decoration: underline;
+
+}
+
+#bejelentkezes:hover
+{
+    color: blue;
+    cursor: pointer;
+}
+#elfjeszo
+{
+    color: white;
+    text-decoration: underline;
+}
+
+#elfjeszo:hover{
+    color: blue;
+    cursor: pointer;
+}
+
+#reg
+{
+    color: white;
+    text-decoration: underline;
+}
+
+#reg:hover{
+    color: blue;
+    cursor: pointer;
+}
+
+body{
+    background-color: lightblue;
+}
+
+#nav
+{
+    background-color: rgb(81, 142, 212);
+
+}
+
+#bal{
+    background-color: lightblue;
+    height: 100%;
+    padding-left: 1.5rem;
+}
+
+#jobb{
+    height: 100%;
+}
+
+span + span{
+    gap: 25px;
+}
+
+.feladat {
+
+    white-space: nowrap;
+    background-color: grey;
+    border-radius: 5px;
+    color: white;
+    height: 3rem;
+    margin-right: 10px; /* opcionális margó a jobb oldali térközért */
+    width: 100%;
+}
+
+
+.sorszam{
+    display: inline-block;
+    background-color: rgb(54, 128, 212);
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    height:3rem;
+    width: 4rem;
+}
+.sorszamp{
+    vertical-align: middle;
+    text-align: center;
+    font-size: large;
+}
+.feladatNev,
+.nehezseg,
+.temakor,
+.pontszam {
+    display: inline-block;
+    
+}
+.feladatNevP,
+.nehezsegP,
+.temakorP,
+.pontszamP {
+    display: inline-block;
+    
+}
+#feladatGomb{
+    background-color: #F8F9FA;
+    color: black;
+}
+.dropdown-menu{
+    background-color: #F8F9FA;
+    padding-left: 0.5rem;
+}
