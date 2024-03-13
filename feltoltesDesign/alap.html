@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="script.js" defer></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+    <!--hostmath.com-->
+  </head>
+<body>
+    <nav class="navbar">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1"><button type="button" class="btn btn-light">Vissza</button></span>
+        </div>
+      </nav>
+      <div id="tartalom">
+        <div class="row row-cols-2">
+          <div class="col-12 col-xl-6">
+            <form id="hozaadasForm">
+              <div class="mb-3">
+                <label for="hozaadasForm" class="form-label"><h3><b>Feladat neve:</b></h3></label>
+                <textarea class="form-control" id="feladatNevForm" rows="1" maxlength="50" onkeyup="BeirCim()"></textarea>
+              </div>
+              <div class="mb-1">
+                <label for="hozaadasForm" class="form-label"><h3><b>Feladat szövege:</b></h3></label>
+                <textarea class="form-control" id="feladatForm" rows="3" maxlength="250" onkeyup="BeirFeladat()"></textarea>
+              </div>
+              <div class="mb-2">
+                <label for="hozaadasForm" class="form-label"><h3><b>Megoldás:</b></h3></label>
+                <textarea class="form-control" id="megoldasForm" rows="1" maxlength="250" onkeyup="BeirMegoldas()"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="hozaadasForm" class="form-label"><h3><b>Nehézségi szint:</b></h3></label>
+                <textarea class="form-control" id="szintForm" rows="1" maxlength="250" onkeyup="BeirNehezeseg()"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="hozaadasForm" class="form-label"><h3><b>Pontszám:</b></h3></label>
+                <textarea class="form-control" id="pontszamForm" rows="1" maxlength="250" onkeyup="BeirPontszam()"></textarea>
+              </div>
+            </form>
+            <input type="button" value="Jóváhagy">
+          </div>
+          <div class="col-12 col-xl-6" id="megjelenit"><h3><b>Megjelenés:</b></h3>
+          <h3 id="FeladatNev"></h3>
+          <p id="szint"></p><br>
+          <p id="feladat"></p>
+          <p>Válasz:</p><input type="text" id="megoldas" disabled class="col-12">
+          <p id="pontszam"></p>
+        </div>
+      </div>
+  </div>
+</body>
+</html>
+
