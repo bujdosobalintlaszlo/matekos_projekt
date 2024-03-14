@@ -4,3 +4,4 @@
 -Bejelentkezesnel meg kell csinalni es ellenorizni az osszes regex-et, hibajelzes.
 -Design modositas: dropdownba generalni es adatbazisbol lekerni az adatokat, fullkepernyosek a feladatok, navbarba sorkozt beallitani.
 -Megoldani hogy frissitesnel az oldal ne jelenkezzen ki.
+-Feladatok tablaban a tema (100karakter hosszu legyen)
