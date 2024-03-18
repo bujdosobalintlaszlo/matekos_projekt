@@ -26,7 +26,6 @@ const AdatbazisEleres = () => {
 AdatbazisEleres();
 
 const LekerdezesEredmenye = (sql) => {
-    //const lekerdezes = document.getElementById("lekerdezesText").value;
     const data = { lekerdezes: sql };
     return fetch("http://127.0.0.1:3000/lekerdezes", {
         method: "POST",
@@ -37,14 +36,12 @@ const LekerdezesEredmenye = (sql) => {
     })
         .then(function (response) {
             if (!response.ok) {
-                //alert("Nem jó válasz érekezett az adatbázisból");
                 return Promise.reject("Nem jó válasz érekezett az adatbázisból");
             }
             return response.json();
         })
         .then(function (response) {
             if (response.Error) {
-                //alert(response.Error);
                 return response.Error;
             } else {
                 return response;
@@ -64,34 +61,37 @@ async function hash(string) {
 }
 
 function Login() {
-    let regE = document.getElementById("regem").value;
-    let pw = document.getElementById("fnjelsz").value;
+    let regE = document.getElementById("regem");
+    let pw = document.getElementById("fnjelsz");
+    const regExpEmail=/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/;
+    const regExpPw=/[A-Za-z0-9\.\_]{8,16}$/;
+    if(regExpEmail.test(regE.value) && regExpPw.test(pw.value))
+    {
     hash(pw).then((valasz)=>{
-        let sql2 = `select f.felhasznaloNev from felhasznalok f where f.email = '${regE}' && f.jelszo = '${valasz}'`;
+        let sql2 = `select f.felhasznaloNev from felhasznalok f where f.email = '${regE.value}' && f.jelszo = '${valasz}'`;
         console.log(sql2);
-        LekerdezesEredmenye(sql2).then((valasz) => {
+        LekerdezesEredmenye(sql2).then((valasz2) => {
             console.log(valasz);
-            if(valasz)
+            if(valasz2)
             {
-                var nev = ""+valasz[0].felhasznaloNev;
+              console.log(valasz2);
+                var nev = ""+valasz2[0].felhasznaloNev;
                 console.log(nev);
-                let sql = `select f.jog from felhasznalok f where f.email = '${regE}'`;
+                let sql = `select f.jog from felhasznalok f where f.email = '${regE.value}'`;
                 console.log(sql);
-                localStorage.setItem("email",regE);
-                localStorage.setItem("fn",valasz[0].felhasznaloNev);
-                localStorage.setItem("login",true);
-                //localStorage.setItem("osztaly",valasz[0].osztaly);
-                
-                LekerdezesEredmenye(sql).then((valasz2) => {
+                sessionStorage.setItem("email",regE.value);
+                sessionStorage.setItem("fn",valasz2[0].felhasznaloNev);
+                sessionStorage.setItem("login",true);
+                LekerdezesEredmenye(sql).then((valasz3) => {
                   if(valasz2[0].jog == "1"){
                     nev +="(admin)";
                     console.log(nev);
-                    localStorage.setItem("jog",valasz[0].jog);
-                    FooldalgenReg(nev,regE);
+                    sessionStorage.setItem("jog",valasz3[0].jog);
+                    FooldalgenReg(nev,regE.value);
 
                 }else{
-                    localStorage.setItem("jog",valasz[0].jog);
-                    FooldalgenReg(nev,regE);
+                    sessionStorage.setItem("jog",valasz3[0].jog);
+                    FooldalgenReg(nev,regE.value);
                 }
             });
             }
@@ -101,6 +101,16 @@ function Login() {
             }
         });
     });
+  }else{
+    if(!regExpEmail.test(regE)){
+        regE.style.border = "1px solid red";
+    }if(!regExpPw.test(pw.value)){
+      pw.style.border = "1px solid red";
+    }if(!regExpEmail.test(regE) && !regExpPw.test(pw.value)){
+      regE.style.border = "1px solid red";
+      pw.style.border = "1px solid red";
+    }
+  }
 }
 
 
@@ -109,39 +119,152 @@ function Regisztracio() {
     let email = document.getElementById("regem").value;
     let jelszo1 = document.getElementById("fnjelsz").value;
     let jelszo2 = document.getElementById("fnjelszujra").value;
-    
-    JelszoMegvizsgal(jelszo1, jelszo2);
+    let osztaly = document.getElementById("osztaly").value;
+    var gomb=document.getElementById("bejelentkezes");
+    gomb.disabled=true;
 
-    hash(jelszo1).then((valasz1)=>{
-    let reg = `Insert into `
-    let sql = `SELECT * FROM felhasznalok f WHERE f.felhasznaloNev = '${felhasznalo}' AND f.jelszo = '${valasz1}' AND f.email = '${email}'`;
-    console.log(sql);
-    LekerdezesEredmenye(sql).then((valasz) => {
-        if (valasz) {
-            alert("Sikeres regisztráció");
-            let nev = document.getElementById("regFf").value;
-            FooldalgenReg(nev,email);
-            localStorage.setItem("email",valasz[0].email);
-            localStorage.setItem("fn",valasz[0].felhasznaloNev);
-            localStorage.setItem("login",true);
-            localStorage.setItem("osztaly",valasz[0].osztaly);
-            localStorage.setItem("jog",valasz[0].jog);
-        } else {
-            alert("Nem sikerült a regisztráció");
+    const regExpFn=/[A-Za-z0-9\.\_]{5,16}$/;
+    let joe=true;
+    let eros = true;
+    if (!regExpFn.test(felhasznalo)) {
+        info.innerHTML="Hibás felhasználónév";
+        joe=false;
+        gomb.disabled=true;
+        console.log("hiba - fn");
+    } else {
+        sql="select count(*) as darab from felhasznalok where nev='"+felhasznalo+"'";
+        LekerdezesEredmenye(sql).then((valasz)=>{
+            if (valasz[0].darab !=undefined && valasz[0].darab!=0) {
+                info.innerHTML=`Már létezik ${felhasznalo} felhasználónév!`;
+                gomb.disabled=true;
+                joe=false;
+            } 
+        });
+    }
+    const regExpEmail=/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/;
+    if (joe && !regExpEmail.test(email)) {
+        info.innerHTML +="Hibás felhasználónév";
+        joe=false;
+        gomb.disabled=true;
+        console.log("hiba - em");
+        alert("gond van");
+    } else {
+        sql="select count(*) as darab from felhasznalok where email='"+email+"'";
+        LekerdezesEredmenye(sql).then((valasz)=>{
+            if (valasz[0].darab!="0") {
+                joe=false;
+            } 
+        });
+    }
+    const osztalyRegExp = /^(9|10|11|12|13)([A-C]|K)$/;
+    if(joe && !osztalyRegExp.test(osztaly) && osztaly != "nan")
+    {
+        info.innerHTML +="Hibás osztály";
+        joe=false;
+        gomb.disabled=true;
+        console.log("hiba - oszt");
+    }
+
+    if(joe && jelszo1 != jelszo2)
+    {
+        info.innerHTML=`A két jelszó nem egyezik!`;
+        joe = false;
+        gomb.disabled=true;
+        console.log("hiba - jelsz");
+    }else{
+
+        if(joe && !ErosE(jelszo1,felhasznalo))
+        {
+            info.innerHTML=`A jelszó nem megfelelő!!`;
+            joe = false;
+            gomb.disabled=false;
+            console.log("hiba - ero");
         }
+    }
+    if(joe)
+    {
+        hash(jelszo1.value).then((hash)=> {
+            let sql = "INSERT INTO felhasznalok VALUES (null, '" + email + "', '" + hash + "','"+felhasznalo+"', 0, '" + osztaly+ "');";
+            console.log(sql);
+            LekerdezesEredmenye(sql).then((valasz)=>{
+                console.log(valasz);
+                console.log("jo");
+            });
+            let sql2 = `SELECT * FROM felhasznalok f WHERE f.felhasznaloNev = '${felhasznalo}' AND f.jelszo = '${hash}' AND f.email = '${email}'`;
+            console.log("--------"); 
+            console.log(sql2);
+            console.log(hash);
+            console.log("--------"); 
+            LekerdezesEredmenye(sql2).then((valasz) => {
+                if (valasz) {
+                    console.log(valasz);
+                    alert("Sikeres regisztráció");
+                    let nev = document.getElementById("regFf").value;
+                    FooldalgenReg(nev,email);
+                    sessionStorage.setItem("email",valasz[0].email);
+                    sessionStorage.setItem("fn",valasz[0].felhasznaloNev);
+                    sessionStorage.setItem("login",true);
+                    sessionStorage.setItem("osztaly",valasz[0].osztaly);
+                    sessionStorage.setItem("jog",valasz[0].jog);
+                } else {
+                    alert("Nem sikerült a regisztráció");
+                }
+            });
     });
-  });
+    }else
+    {
+      alert("Hibás adatok!");
+      location.reload();
+    }
 }
+
+
+
 
 function JelszoMegvizsgal(jelsz1,jelsz2)
 {
     if(jelsz1 != jelsz2)
     {
-        alert("Nem egyezik a két jelszó");
+        alert("nem egyezik a jelszo");
         location.reload();
     }
 }
+function ErosE(jelsz, felhasz) {
+  if (jelsz.includes(felhasz)) {
+      return false; 
+  }
 
+  if (jelsz.length < 5 || jelsz.length > 16) {
+      return false;
+  }
+
+  let kicsi = false;
+  let nagy = false;
+  let szam = false;
+  let spec = false;
+  for (let i = 0; i < jelsz.length - 2; i++) {
+      if (jelsz[i].charCodeAt() + 1 === jelsz[i + 1].charCodeAt() && jelsz[i + 1].charCodeAt() + 1 === jelsz[i + 2].charCodeAt()) {
+          return false;
+      }
+  }
+
+  for (let i = 0; i < jelsz.length; i++) {
+      if (/[a-z]/.test(jelsz[i])) {
+          kicsi = true;
+      } else if (/[A-Z]/.test(jelsz[i])) {
+          nagy = true;
+      } else if (/[0-9]/.test(jelsz[i])) {
+          szam = true;
+      }else if(/[\.\_]/.test(jelsz[i])){
+          spec = true;
+      }
+      else
+      {
+          return false;
+      }
+  }
+  return kicsi && nagy && szam && spec;
+}
 
 function BejelentkezesGen()
 {
@@ -196,7 +319,7 @@ function RegGen()
     <input type="password" class="form-control" id="fnjelszujra" placeholder="Jelszó újra">
     <br>
     <div class="text-center">
-    <input type="button" class="btn btn-light col-12" value="Regisztráció" onclick="Regisztracio()">
+    <input type="button" class="btn btn-light col-12" value="Regisztráció" onclick="regisztracio()">
     <br>
     <a onclick="BejelentkezesGen()" id="bejelentkezes">Van már fiókom</a>
   </div>`;
@@ -223,10 +346,13 @@ function FooldalgenReg(nev,email){
       <span><li class="nav-item">
         <input type="button" value="Kijelentkezés" class="btn btn-light" onclick="Kijelentkezes()">
       </li></span>
-      
+      <span style="display :none" id="feltoltes"><li class="nav-item">
+        <input type="button" value="Feltöltés" class="btn btn-light">
+      </li></span>
+      <span id="lenyilo"><li class="nav-item">
       <span><li class="nav-item"><div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" id="feladatGomb" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Feladatok
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Dropdown button
       </button>
       <ul class="dropdown-menu">
       <div class="form-check">
@@ -343,23 +469,13 @@ function FooldalgenReg(nev,email){
       </ul>
       </li></span>
       </div>
-
-      <span style="display :none" id="feltoltes"><li class="nav-item">
-        <input type="button" value="Feltöltés" class="btn btn-light">
-      </li></span>
-    </ul>
       </div>
     </div>
   </nav>
-  <div>
-
-
-      
-      <div class="col-12" id="feladatok">
-        <br>
-      </div>
-
   </div>
+    <div class="col-12" id="jobb">
+    </div>
+    </div>
     `;
   let sql = `select f.jog from felhasznalok f where f.email = '${email}'`;
   console.log(sql);
@@ -386,22 +502,21 @@ function FeladatListaz() {
               megoldas: adat.megoldas,
               nehezseg: adat.nehezseg,
               pontszam: adat.pontszam,
-              nev: adat.nev,
-              check: false
+              nev: adat.nev
           });
       });
 
-      FeladatokFeltolt(); // Csak itt hívd meg a FeladatokFeltolt függvényt
+      FeladatokFeltolt();
   });
 }
 
 function FeladatokFeltolt() {
-  var hely = document.getElementById("feladatok");
+  var hely = document.getElementById("jobb");
   feladatok.forEach(adattag => {
       let div = document.createElement("div");
       div.id = adattag.id;
       div.classList.add("feladat");
-      //div.classList.add("col-8");
+      div.classList.add("col-8");
 
       // Call Szinez function to get color and text
       let szinResult = Szinez(adattag.nehezseg);
@@ -431,7 +546,8 @@ function FeladatokFeltolt() {
   });
 }
 
-function Szinez(nehezseg) {
+function Szinez(nehezseg) 
+{
   let result = {
       color: "",
       text: ""
@@ -455,14 +571,30 @@ function Szinez(nehezseg) {
 }
 
 
-
-function FeladatokSzurese(){
-
+function Kijelentkezes(){
+  sessionStorage.clear();
+  location.reload();
 }
 
 
+function BejelentkezesUtaniFeladatokMegjelenitese() {
+  const nev = sessionStorage.getItem("fn");
+  const email = sessionStorage.getItem("email");
+  if (nev && email) {
+      FooldalgenReg(nev, email);
+  } else {
+      console.log("Nem vagy bejelentkezve!");
+  }
+}
 
-function Kijelentkezes(){
-  localStorage.clear();
-  location.reload();
+window.onload = function() {
+  BejelentkezesUtaniFeladatokMegjelenitese();
+};
+
+
+function Feltoltes()
+{
+  document.body.innerHTML +="";
+  document.body.innerHTML =``;
+
 }
