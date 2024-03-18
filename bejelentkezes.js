@@ -338,21 +338,21 @@ function FooldalgenReg(nev,email){
       <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
       <span><li class="nav-item">
-        <input type="button" value="Feladatok" class="btn btn-light">
+        <input type="button" value="Feladatok" class="btn btn-light terKoz">
       </li></span>
       <span><li class="nav-item">
-        <input type="button" value="Dolgozatok" class="btn btn-light">
+        <input type="button" value="Dolgozatok" class="btn btn-light terKoz">
       </li></span>
       <span><li class="nav-item">
-        <input type="button" value="Kijelentkezés" class="btn btn-light" onclick="Kijelentkezes()">
+        <input type="button" value="Kijelentkezés" class="btn btn-light terKoz" onclick="Kijelentkezes()">
       </li></span>
       <span style="display :none" id="feltoltes"><li class="nav-item">
-        <input type="button" value="Feltöltés" class="btn btn-light">
+        <input type="button" value="Feltöltés" class="btn btn-light terKoz">
       </li></span>
       <span id="lenyilo"><li class="nav-item">
       <span><li class="nav-item"><div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Dropdown button
+      <button class="btn btn-secondary dropdown-toggle terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Témák
       </button>
       <ul class="dropdown-menu">
       <div class="form-check">
@@ -516,7 +516,7 @@ function FeladatokFeltolt() {
       let div = document.createElement("div");
       div.id = adattag.id;
       div.classList.add("feladat");
-      div.classList.add("col-8");
+      div.classList.add("col-12");
 
       // Call Szinez function to get color and text
       let szinResult = Szinez(adattag.nehezseg);
