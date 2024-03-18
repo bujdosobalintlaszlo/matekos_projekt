@@ -18,13 +18,11 @@
 {
     color: white;
     text-decoration: underline;
-
 }
 
 #bejelentkezes:hover
 {
     color: blue;
-    cursor: pointer;
 }
 #elfjeszo
 {
@@ -34,7 +32,6 @@
 
 #elfjeszo:hover{
     color: blue;
-    cursor: pointer;
 }
 
 #reg
@@ -45,11 +42,10 @@
 
 #reg:hover{
     color: blue;
-    cursor: pointer;
 }
 
 body{
-    background-color: lightblue;
+    background-color: white;
 }
 
 #nav
@@ -86,7 +82,7 @@ span + span{
 
 .sorszam{
     display: inline-block;
-    background-color: rgb(54, 128, 212);
+    background-color: lightblue;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
     height:3rem;
@@ -111,11 +107,4 @@ span + span{
     display: inline-block;
     
 }
-#feladatGomb{
-    background-color: #F8F9FA;
-    color: black;
-}
-.dropdown-menu{
-    background-color: #F8F9FA;
-    padding-left: 0.5rem;
-}
+
