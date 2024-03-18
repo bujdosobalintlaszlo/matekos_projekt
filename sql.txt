@@ -1,0 +1,66 @@
+select f.felhasznaloNev
+from felhasznalok f
+where f.email==rege
+
+
+if (regExpPw.test(pw)) {
+    hash(pw).then((hash)=> {
+        let sql="select * from "+
+				"felhasznalok f "+
+				"where f.jelszo='"+hash+"'";
+        console.log(sql);
+        LekerdezesEredmenye(sql).then((valasz)=>{
+            console.log(valasz);
+        });
+    })
+} 
+
+
+select f.jog
+from felhasznalo f
+where f.email = rege
+
+select count(*) as darab
+from feladatok f
+
+select f.jog
+from felhasznalok f
+where f.email=regE
+
+ALTER TABLE feladatok
+ADD COLUMN feladat Varchar(500) 
+
+alter table feladatok
+CHANGE COLUMN temakor temakorID int;
+
+
+CREATE TABLE temakor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    temakor TEXT
+);
+
+
+INSERT INTO temakor (temakor) VALUES
+('Abszolútérték, gyök'),
+('Bizonyítások'),
+('Egyenletek, egyenlőtlenségek, egyenletrendszerek'),
+('Egyszerűsítések, átalakítások'),
+('Értelmezési tartomány, értékkészlet'),
+('Exponenciális és logaritmusos feladatok'),
+('Függvények, analízis'),
+('Halmazok'),
+('Kombinatorika'),
+('Logika, gráfok'),
+('Síkgeometria'),
+('Sorozatok'),
+('Statisztika'),
+('Számelmélet'),
+('Szöveges feladatok'),
+('Térgeometria'),
+('Trigonometria'),
+('Valószínűségszámítás');
+
+ALTER TABLE feladatok
+ADD CONSTRAINT fk_temakorID
+FOREIGN KEY (temakorID)
+REFERENCES temakor(id);
