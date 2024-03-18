@@ -23,6 +23,7 @@
 #bejelentkezes:hover
 {
     color: blue;
+    cursor: pointer;
 }
 #elfjeszo
 {
@@ -32,6 +33,7 @@
 
 #elfjeszo:hover{
     color: blue;
+    cursor: pointer;
 }
 
 #reg
@@ -42,6 +44,7 @@
 
 #reg:hover{
     color: blue;
+    cursor: pointer;
 }
 
 body{
@@ -51,6 +54,7 @@ body{
 #nav
 {
     background-color: rgb(81, 142, 212);
+    margin-bottom: 1rem;
 
 }
 
@@ -106,5 +110,19 @@ span + span{
 .pontszamP {
     display: inline-block;
     
+}
+.terKoz{
+    letter-spacing: 1px;
+    margin-right: 1rem;
+    
+}
+@media (max-width: 992px) { /* Media query a mobilos nézethez */
+    .terKoz{
+      margin-bottom: 0.6rem; 
+      margin-right: 0; 
+    }
+  }
+#jobb{
+    margin-bottom: 10rem;
 }
 
