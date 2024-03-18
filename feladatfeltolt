@@ -1,0 +1,71 @@
+var feladatok = [];
+function FeladatListaz() {
+  let sqlFeladatok = `Select * from feladatok`;
+
+  LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
+      valasz.forEach(adat => {
+          feladatok.push({
+              id: adat.id,
+              temakor: adat.temakor,
+              megoldas: adat.megoldas,
+              nehezseg: adat.nehezseg,
+              pontszam: adat.pontszam,
+              nev: adat.nev
+          });
+      });
+
+      FeladatokFeltolt("jobb");
+  });
+}
+
+function FeladatokFeltolt(divId) {
+  var hely = document.getElementById(divId);
+  feladatok.forEach(adattag => {
+      let div = document.createElement("div");
+      div.id = adattag.id;
+      div.classList.add("feladat");
+      div.classList.add("col-12");
+      ///div.classList.add("row");
+      let szinResult = Szinez(adattag.nehezseg);
+
+      div.innerHTML = `
+      <div class="sorszam" id="${adattag.id}" style="background-color: ${szinResult.color}">
+          <p class=" col-1">${adattag.id}.</p>
+      </div>
+      <div class="col-11 col-sm-7">
+      <p class="feladatNevP">${adattag.nev}</p>
+      </div>
+
+      <div class="col-sm-4  d-none d-sm-block ">
+      <p class="temakorP">${adattag.temakor}</p>
+  </div>
+  `;
+
+      hely.appendChild(div);
+      hely.appendChild(document.createElement("br"));
+  });
+}
+
+function Szinez(nehezseg) 
+{
+  let result = {
+      color: "",
+      text: ""
+  };
+
+  if (nehezseg == "0") {
+      result.color = "green";
+      result.text = "Középszint";
+  } else if (nehezseg == "1") {
+      result.color = "orange";
+      result.text = "Emeltszint";
+  } else if (nehezseg == "2") {
+      result.color = "red";
+      result.text = "Verseny feladat";
+  } else {
+      result.color = "black";
+      result.text = "-";
+  }
+
+  return result;
+}
