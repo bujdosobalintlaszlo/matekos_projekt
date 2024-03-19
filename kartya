@@ -1,0 +1,9 @@
+        <div class="sorszam col-2" style="background-color: ${szinResult.color}">
+        
+        </div>
+        <div class="feladatNev col-5">
+          <p>${adattag.nev}</p>
+        </div>
+        <div class="feladatTemakor col-5">
+          <p>${adattag.temakor}</p>
+        </div>
