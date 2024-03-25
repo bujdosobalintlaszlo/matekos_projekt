@@ -64,3 +64,11 @@ ALTER TABLE feladatok
 ADD CONSTRAINT fk_temakorID
 FOREIGN KEY (temakorID)
 REFERENCES temakor(id);
+
+
+select f.megoldas
+from feladatok f
+where f.id=id
+
+alter table feladatesfelhasznalokapcs
+add meoldIdo timestamp
