@@ -5,3 +5,4 @@
 -Design modositas: dropdownba generalni es adatbazisbol lekerni az adatokat, fullkepernyosek a feladatok, navbarba sorkozt beallitani.
 -Megoldani hogy frissitesnel az oldal ne jelenkezzen ki.
 -Feladatok tablaban a tema (100karakter hosszu legyen)
+#Új hibák: ha az email jo es a jelszo rossz nincs hibajelzes(bejelentkezes)!
