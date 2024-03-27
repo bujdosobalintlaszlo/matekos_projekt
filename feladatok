@@ -1,0 +1,9 @@
+Insert into feladatok VALUES(null,14,'$2^3$*3*7*11',0,2,'2023. október 17. (I.) 1.feladat','Adja meg az 1848 prímtényezős felbontását!');
+Insert into feladatok VALUES(null,15,'10',0,2,'2023. október 17. (I.) 2.feladat','Egy építkezésre teherautókkal szállítják a homokot. Öt egyforma teherautó mindegyikének nyolcszor kellene fordulnia, hogy az összes homokot odaszállítsák. Hány fordulóval
+tudná odaszállítani ugyanezt a mennyiségű homokot négy ugyanekkora teherautó?');
+Insert into feladatok VALUES(null,7,'C',0,2,'2023. október 17. (I.) 4.feladat','Válassza ki az alábbi, a valós számok halmazán értelmezett függvények közül azt,
+amelyik nem vesz fel negatív értéket!A,$x\mapsto x+3$ B,$x\mapsto x^2-3$ C,$x\mapsto |x-3|$ A válasz formátuma a következő: Pl.: A');
+Insert into feladatok VALUES(null,15,'300FT',0,2,'2023. október 17. (I.) 5.feladat','Egy autók bérbeadásával foglalkozó cég honlapja szerint ha legfeljebb 5 napra bérlünk
+egy bizonyos típust, akkor a bérlés díja 7500 Ft/nap. Ha legalább 6 napra béreljük
+ugyanezt a típust, akkor a bérlés díja csak 6300 Ft/nap.
+Mennyivel magasabb a teljes bérleti díj, ha 5 nap helyett 6 napra béreljük ezt a típust? A válasz formátuma: 100FT');
