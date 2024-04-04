@@ -10,6 +10,7 @@ var kat = false;
 //ebbe gyujtjuk a kiszurt feladatokat es jelenitjuk meg(ez egy tomb)
 var szurt;
 //--------------
+
 function KozepSzur() {
     var hely = document.getElementById("jobb");
     hely.innerHTML = ' ';
@@ -161,10 +162,17 @@ function Osszes() {
 
 
 function TemakorSzures(id) {
-    //g_id = id;
-    //OsszesSzur === true ? Osszes() : (kozepSzur === true ? KozepSzur() : (emeltSzur === true ? EmeltSzur() :(versenySzur === true ? VersenySzur() : JelSzur())));
-   
-
+    if (szurt==undefined) {
+        szur=new Array();
+    }
+    if(document.getElementById(id).checked){
+        console.log(id +" heheheheh");
+        szurt=szurt.concat(feladatok.filter(x=> x.temakorId == id));
+        console.log(szurt);
+    }else{
+        szurt.splice(x=> x.temakorId == id);
+        console.log(szurt);
+    }
     /*
     ha (az adott id-jú elem állapota pipa lett) akkor
         szurt -höz hozzáadjuk a feladatok.filter(x=>x.id=id)
