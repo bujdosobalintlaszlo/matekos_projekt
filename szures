@@ -1,0 +1,176 @@
+//Szintszureshez valotozok
+var OsszesSzur = false;
+var kozepSzur = false;
+var emeltSzur = true;
+var versenySzur = false;
+var jelSzur = false;
+//------------------
+var kat = false;
+
+//ebbe gyujtjuk a kiszurt feladatokat es jelenitjuk meg(ez egy tomb)
+var szurt;
+//--------------
+function KozepSzur() {
+    var hely = document.getElementById("jobb");
+    hely.innerHTML = ' ';
+    feladatok.forEach(adattag => {
+        if (adattag.nehezseg == "0") {
+            let div = document.createElement("div");
+            div.id = adattag.id;
+            div.classList.add("feladat");
+            div.classList.add("col-12");
+            div.classList.add("row");
+
+            let szinResult = Szinez(adattag.nehezseg);
+            div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+                <p>${adattag.id}.</p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="${adattag.id}temakorP"></p>
+            </div>
+        `;
+            TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+            hely.appendChild(div);
+            hely.appendChild(document.createElement("br"));
+        }
+    });
+    console.log(feladatok);
+}
+
+function EmeltSzur() {
+    var hely = document.getElementById("jobb");
+    hely.innerHTML = ' ';
+    feladatok.forEach(adattag => {
+        if (adattag.nehezseg == "1") {
+            let div = document.createElement("div");
+            div.id = adattag.id;
+            div.classList.add("feladat");
+            div.classList.add("col-12");
+            div.classList.add("row");
+
+            let szinResult = Szinez(adattag.nehezseg);
+            div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+                <p>${adattag.id}.</p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="${adattag.id}temakorP"></p>
+            </div>
+        `;
+            TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+            hely.appendChild(div);
+            hely.appendChild(document.createElement("br"));
+        }
+    });
+    OsszesSzur = false;
+    kozepSzur = false;
+    emeltSzur = true;
+    versenySzur = false;
+    jelSzur = false;
+}
+
+
+function VersenySzur() {
+    var hely = document.getElementById("jobb");
+    hely.innerHTML = ' ';
+    feladatok.forEach(adattag => {
+        if (adattag.nehezseg == "2") {
+            let div = document.createElement("div");
+            div.id = adattag.id;
+            div.classList.add("feladat");
+            div.classList.add("col-12");
+            div.classList.add("row");
+
+            let szinResult = Szinez(adattag.nehezseg);
+            div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+                <p>${adattag.id}.</p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="${adattag.id}temakorP"></p>
+            </div>
+        `;
+            TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+            hely.appendChild(div);
+            hely.appendChild(document.createElement("br"));
+        }
+    });
+    OsszesSzur = false;
+    kozepSzur = false;
+    emeltSzur = false;
+    versenySzur = true;
+    jelSzur = false;
+}
+
+function JelSzur() {
+
+    /* 
+        if (izé pipa) {
+            szurt=szurt.filter(a feltétel alapján);
+        }
+    */
+
+    var hely = document.getElementById("jobb");
+    hely.innerHTML = ' ';
+    feladatok.forEach(adattag => {
+        if (parseInt(adattag.nehezseg) >= 3) {
+            let div = document.createElement("div");
+            div.id = adattag.id;
+            div.classList.add("feladat");
+            div.classList.add("col-12");
+            div.classList.add("row");
+
+            let szinResult = Szinez(adattag.nehezseg);
+            div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+                <p>${adattag.id}.</p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="${adattag.id}temakorP"></p>
+            </div>
+        `;
+            TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+            hely.appendChild(div);
+            hely.appendChild(document.createElement("br"));
+        }
+    });
+    OsszesSzur = false;
+    kozepSzur = false;
+    emeltSzur = false;
+    versenySzur = false;
+    jelSzur = true;
+}
+
+function Osszes() {
+    document.getElementById("jobb").innerHTML = "";
+    FeladatokFeltolt("jobb");
+}
+
+
+function TemakorSzures(id) {
+    //g_id = id;
+    //OsszesSzur === true ? Osszes() : (kozepSzur === true ? KozepSzur() : (emeltSzur === true ? EmeltSzur() :(versenySzur === true ? VersenySzur() : JelSzur())));
+   
+
+    /*
+    ha (az adott id-jú elem állapota pipa lett) akkor
+        szurt -höz hozzáadjuk a feladatok.filter(x=>x.id=id)
+    különben
+        szurt-ből kitöröljük a szurt.filter(x=>x.id=id)
+    e.v
+    */
+}
+
