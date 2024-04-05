@@ -6,3 +6,4 @@
 -Megoldani hogy frissitesnel az oldal ne jelenkezzen ki.
 -Feladatok tablaban a tema (100karakter hosszu legyen)
 # Szures meg kell csinalni!!!!!!!!!!!!(04.04)
+# Szuresnel a generalast frissiteni hogy legyen onclick!!!!!!!
