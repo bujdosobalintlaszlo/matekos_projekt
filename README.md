@@ -7,3 +7,4 @@
 -Feladatok tablaban a tema (100karakter hosszu legyen)
 # Szures meg kell csinalni!!!!!!!!!!!!(04.04)
 # Szuresnel a generalast frissiteni hogy legyen onclick!!!!!!!
+# Ha be van pipálva egy kategória de nicns hozzá feladat akkor mutasson semmit
