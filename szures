@@ -1,7 +1,7 @@
 //Szintszureshez valotozok
 var OsszesSzur = false;
 var kozepSzur = false;
-var emeltSzur = true;
+var emeltSzur = false;
 var versenySzur = false;
 var jelSzur = false;
 //------------------
@@ -9,54 +9,49 @@ var kat = false;
 
 //ebbe gyujtjuk a kiszurt feladatokat es jelenitjuk meg(ez egy tomb)
 var szurt =[];
+var eredetiSzurt=[];
 //--------------
 
-function KozepSzur() {
-    szurt = [];
-    szurt = szurt.concat(feladatok.filter(x => x.nehezseg == "0"));
+function szur() {
+    console.log(eredetiSzurt,szurt);
+    szurt =[];
+    if (kozepSzur) {
+        szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "0"));
+    } 
+    if (emeltSzur) {
+        szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "1"));
+    } 
+    if (versenySzur) {
+        szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "2"));
+    } 
+    if (jelSzur) {
+        szurt = szurt.concat(eredetiSzurt.filter(x => parseInt(x.nehezseg) >= 3));
+    } 
+    if (!(jelSzur || kozepSzur || emeltSzur || versenySzur)) {
+        szurt=eredetiSzurt;
+    }
     MegjelenitItems();
-    OsszesSzur = true;
-    kozepSzur = false;
-    emeltSzur = false;
-    versenySzur = false;
-    jelSzur = false;
+}
+
+function KozepSzur() {
+    kozepSzur=!kozepSzur;
+    szur();
 }
 
 function EmeltSzur() {
-
-    szurt = [];
-    szurt = szurt.concat(feladatok.filter(x => x.nehezseg =="1"));
-    MegjelenitItems();
-    OsszesSzur = false;
-    kozepSzur = false;
-    emeltSzur = true;
-    versenySzur = false;
-    jelSzur = false;
+    emeltSzur=!emeltSzur;
+    szur();
 }
 
 
 function VersenySzur() {
-
-    szurt = [];
-    szurt = szurt.concat(feladatok.filter(x => x.nehezseg == "2"));
-    MegjelenitItems();
-    OsszesSzur = false;
-    kozepSzur = false;
-    emeltSzur = false;
-    versenySzur = true;
-    jelSzur = false;
+    versenySzur=!versenySzur;
+    szur();
 }
 
 function JelSzur() {
-
-    szurt = [];
-    szurt = szurt.concat(feladatok.filter(x => parseInt(x.nehezseg) >= 3));
-    MegjelenitItems();
-    OsszesSzur = false;
-    kozepSzur = false;
-    emeltSzur = false;
-    versenySzur = false;
-    jelSzur = true;
+    jelSzur=!jelSzur;
+    szur();
 }
 
 function Osszes() {
@@ -73,9 +68,11 @@ function TemakorSzures(id) {
         szurt = szurt.filter(x => x.temakorId != id);
         MegjelenitItems();
     }
+
     if(szurt.length === 0){
         Osszes();
     }
+    eredetiSzurt=szurt;
 }
  function MegjelenitItems(){
         var hely = document.getElementById("jobb");
