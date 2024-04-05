@@ -57,12 +57,16 @@ function JelSzur() {
 function Osszes() {
     document.getElementById("jobb").innerHTML = "";
     FeladatokFeltolt("jobb");
+    OsszesSzur = false;
+    kozepSzur = false;
+    emeltSzur = false;
+    versenySzur = false;
+    jelSzur = false;
 }
-
 
 function TemakorSzures(id) {
     if (document.getElementById(id).checked) {
-        szurt = szurt.concat(feladatok.filter(x => x.temakorId == id));
+        szurt = eredetiSzurt.filter(x => x.temakorId == id);
         MegjelenitItems();
     } else {
         szurt = szurt.filter(x => x.temakorId != id);
@@ -76,7 +80,7 @@ function TemakorSzures(id) {
 }
  function MegjelenitItems(){
         var hely = document.getElementById("jobb");
-        hely.innerHTML="";
+        hely.innerHTML="";  
         szurt.forEach(adattag=>{
         let div = document.createElement("div");
         div.id = adattag.id;
