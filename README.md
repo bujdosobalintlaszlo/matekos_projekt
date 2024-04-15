@@ -8,5 +8,5 @@
 # Szures meg kell csinalni!!!!!!!!!!!!(04.04)
 # Szuresnel a generalast frissiteni hogy legyen onclick!!!!!!!
 # Ha be van pipálva egy kategória de nicns hozzá feladat akkor mutasson semmit
-#Ne lehessen ugyan olyan nevű feladatot feltölteni 2x
-#Kövi menüpont
+# Ne lehessen ugyan olyan nevű feladatot feltölteni 2x
+# Kövi menüpont
