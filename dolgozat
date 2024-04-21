@@ -1,0 +1,156 @@
+
+var jelenlegi;
+var dolgozatIdTomb = [];
+var kivesz = [];
+var feladatDolgozat;
+function DolgozatokGen(){
+    document.body.innerHTML="";
+    document.body.innerHTML = `
+    <nav class="navbar navbar-expand-lg" id="nav">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <span>
+                <li class="nav-item">
+                    <input type="button" value="Vissza" class="btn btn-light terKoz" onclick="Vissza()">
+                </li>
+            </span>
+        <span>
+            <li class="nav-item">
+                <input type="button" value="Hozzáad" class="btn btn-light terKoz" onclick="Hozzaad()">
+            </li>
+        </span>
+        <span>
+            <li class="nav-item">
+                <input type="button" value="Kivesz" class="btn btn-light terKoz" onclick="Kivesz()">
+            </li>
+        </span>
+    </div>
+    </div>
+</nav>
+    <div class="row">
+      <div class="col" id="kereses">
+        <form class="d-flex col-md-6 col-s-12" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form><br>
+      </div>
+      <div class="col-md-6 col-s-12" id="feladatok">
+      <h1 id="cim">
+      A feladatok:
+        </h1>
+      </div>
+    </div>
+</div>`;
+FeladatokFeltoltDolgozat("kereses");
+}
+
+function FeladatokFeltoltDolgozat(divId) {
+    var hely = document.getElementById(divId);
+    feladatok.forEach(adattag => {
+        let div = document.createElement("div");
+        div.id = adattag.id;
+        div.classList.add("feladat");
+        div.classList.add("col-12");     
+        let szinResult = Szinez(adattag.nehezseg);
+        div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="HozzaAdHozzaAdVagyKivesz(${adattag.id})">
+                <p><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+              </svg></p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="temakorP"></p>
+            </div>
+        `;
+        TemakorBeiir(adattag.temakor);
+        hely.appendChild(div);
+        hely.appendChild(document.createElement("br"));
+    });
+  }
+  function FeladatokFeltoltDolgozat2(hely,divId) {
+    var hely = document.getElementById(hely);
+        let div = document.createElement("div");
+        div.id = divId-1;
+        div.classList.add("feladat");
+        div.classList.add("col-12");     
+        let szinResult = Szinez(feladatok[divId-1].nehezseg);
+        div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="HozzaAdHozzaAdVagyKivesz(${divId-1})">
+                <p><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+              </svg></p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${feladatok[divId-1].nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="temakorP"></p>
+            </div>
+        `;
+        TemakorBeiir(feladatok[divId-1].temakorId);
+        hely.appendChild(div);
+        hely.appendChild(document.createElement("br"));
+  }
+  function HozzaAdHozzaAdVagyKivesz(id){
+    if(dolgozatIdTomb.includes(id)){
+        feladatDolgozat.splice(id,id);
+        dolgozatIdTomb.splice(id,id);
+        kivesz.push(id);
+        MegjelenitHozzaadottFeladat(kivesz,"feladatok");
+    }
+    if(kivesz.includes(id)){
+        feladatDolgozat.push(id);
+        kivesz.splice(id,id);
+        dolgozatIdTomb.push(id);
+        MegjelenitHozzaadottFeladat(dolgozatIdTomb,"keres");
+    }
+    if(!dolgozatIdTomb.includes(id) && !kivesz.includes(id)){
+        dolgozatIdTomb.push(id);
+        console.log(feladatDolgozat);
+        MegjelenitHozzaadottFeladat(dolgozatIdTomb,"feladatok");
+    }
+}
+  
+  function MegjelenitHozzaadottFeladat(arr,hely){
+    console.log(feladatDolgozat);
+    for (let index = 0; index < arr.length; index++) {
+        FeladatokFeltoltDolgozat2(hely,arr[index]);
+    }
+  }
+function FeladatKartyaGen(divId,hely)
+{
+    let index = divId-1;
+    console.log(hely);
+    var hely = document.getElementById(hely);
+    hely.innerHTML ="";
+    var div = document.createElement("div");
+    let szinResult = Szinez(feladatok[index].temakorId);
+    div.innerHTML = `
+        <div class="sorszam" id="${feladatok[index].id}" style="background-color: ${szinResult.color}">
+            <p class=" col-1">${feladatok[index].id}.</p>
+        </div>
+        <div class="col-11 col-sm-7">
+            <p class="feladatNevP">${feladatok[index].nev}</p>
+        </div>
+        <div class="col-sm-4  d-none d-sm-block ">
+            ${SzambolTemakor(index)}
+        </div>`;
+    hely.appendChild(div);
+    hely.appendChild(document.createElement("br"));
+    
+}
+function SzambolTemakor (index){
+    let sql = `select t.temakor as tema from temakor t where t.id = ${feladatok[index].temakorId}`;
+    LekerdezesEredmenye(sql).then((valasz)=>{
+        let p = document.createElement("p");
+        p.classList.add("temakorP");
+        p.innerHTML=valasz[0].tema;
+    });
+}
