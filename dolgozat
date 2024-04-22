@@ -1,6 +1,6 @@
 
 var jelenlegi;
-var dolgozatIdTomb = [];
+    var dolgozatIdTomb = [];
 var kivesz = [];
 var feladatDolgozat;
 function DolgozatokGen(){
@@ -54,11 +54,12 @@ function FeladatokFeltoltDolgozat(divId) {
         let div = document.createElement("div");
         div.id = adattag.id;
         div.classList.add("feladat");
-        div.classList.add("col-12");     
+        div.classList.add("col-12");
+        div.style.marginBottom="20px";     
         let szinResult = Szinez(adattag.nehezseg);
         div.innerHTML = `
-            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="HozzaAdHozzaAdVagyKivesz(${adattag.id})">
-                <p><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+            <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+                <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
               </svg></p>
             </div>
@@ -71,19 +72,18 @@ function FeladatokFeltoltDolgozat(divId) {
         `;
         TemakorBeiir(adattag.temakor);
         hely.appendChild(div);
-        hely.appendChild(document.createElement("br"));
     });
   }
   function FeladatokFeltoltDolgozat2(hely,divId) {
     var hely = document.getElementById(hely);
         let div = document.createElement("div");
-        div.id = divId-1;
+        div.id = `doga${divId-1}`;
         div.classList.add("feladat");
         div.classList.add("col-12");     
         let szinResult = Szinez(feladatok[divId-1].nehezseg);
         div.innerHTML = `
-            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="HozzaAdHozzaAdVagyKivesz(${divId-1})">
-                <p><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="hozzaad(${divId-1},'jobbra')">
+                <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
                 <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
               </svg></p>
             </div>
@@ -98,32 +98,39 @@ function FeladatokFeltoltDolgozat(divId) {
         hely.appendChild(div);
         hely.appendChild(document.createElement("br"));
   }
-  function HozzaAdHozzaAdVagyKivesz(id){
-    if(dolgozatIdTomb.includes(id)){
-        feladatDolgozat.splice(id,id);
-        dolgozatIdTomb.splice(id,id);
-        kivesz.push(id);
-        MegjelenitHozzaadottFeladat(kivesz,"feladatok");
-    }
-    if(kivesz.includes(id)){
-        feladatDolgozat.push(id);
-        kivesz.splice(id,id);
-        dolgozatIdTomb.push(id);
-        MegjelenitHozzaadottFeladat(dolgozatIdTomb,"keres");
-    }
-    if(!dolgozatIdTomb.includes(id) && !kivesz.includes(id)){
-        dolgozatIdTomb.push(id);
-        console.log(feladatDolgozat);
-        MegjelenitHozzaadottFeladat(dolgozatIdTomb,"feladatok");
-    }
+  //meg tombbe kell menteni mi kerul be
+  function Hozzaad(elem,id){
+      if(elem.dataset.adattag == "jobbra"){
+          document.getElementById("feladatok").appendChild(elem.parentElement);
+          document.getElementById(`svg${id}`).innerHTML="";
+          document.getElementById(`svg${id}`).innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+          <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/></svg>`;
+          document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
+      }
+      else if(elem.dataset.adattag == "balra"){
+        document.getElementById("kereses").appendChild(elem.parentElement);
+        document.getElementById(`svg${id}`).innerHTML="";
+        document.getElementById(`svg${id}`).innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+      </svg>`;
+      document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
+      }
 }
-  
   function MegjelenitHozzaadottFeladat(arr,hely){
-    console.log(feladatDolgozat);
+    
+    document.getElementById(hely).innerHTML ="";
     for (let index = 0; index < arr.length; index++) {
         FeladatokFeltoltDolgozat2(hely,arr[index]);
     }
   }
+  
+  function KartyaTorol(ind){
+      if(!dolgozatIdTomb.includes(ind)){
+          document.getElementById(ind).remove();
+      }
+  }
+
+
 function FeladatKartyaGen(divId,hely)
 {
     let index = divId-1;
