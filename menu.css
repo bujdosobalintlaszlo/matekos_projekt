@@ -1,0 +1,95 @@
+body{
+    background-color: white;
+}
+
+#nav
+{
+    background-color: rgb(46, 60, 75);
+    color: white;
+}
+
+#bal{
+    background-color: lightblue;
+    height: 100%;
+    padding-left: 1.5rem;
+}
+
+#jobb{
+    height: 100%;
+}
+
+span + span{
+    gap: 25px;
+}
+
+.feladat {
+
+    white-space: nowrap;
+    background-color: grey ;
+    border-radius: 5px;
+    color: white;
+    height: 3rem;
+    margin-right: 10px; /* opcionális margó a jobb oldali térközért */
+    width: 100%;
+}
+.sorszam{
+    display: inline-block;
+    /*background-color: lightblue;*/
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    height:3rem;
+    width: 4rem;
+}
+.sorszamp{
+    vertical-align: middle;
+    text-align: center;
+    font-size: large;
+}
+.feladatNev,
+.nehezseg,
+.temakor,
+.pontszam {
+    display: inline-block;
+    
+}
+.feladatNevP,
+.nehezsegP,
+.temakorP,
+.pontszamP {
+    display: inline-block;
+    
+}
+.nav-item {
+    margin-right: 25px; /* A span elemek közötti távolság beállítása */
+}
+
+/* Ha az utolsó elemnek nem szeretnénk távolságot adni, használhatjuk a :last-child pseudo-osztályt */
+.nav-item:last-child {
+    margin-right: 0;
+}
+div.scrollmenu {
+    background-color: rgb(46, 60, 75);
+    overflow: auto;
+    white-space: nowrap;
+    height: 3.5rem;
+  }
+  
+  div.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+  }
+  
+  div.scrollmenu a:hover {
+    background-color: #777;
+  }
+  .btn
+  {
+    border-radius: 15px;
+  }
+  .feladatNev p{
+      /* font-weight: bold; */
+      color: white;
+    }
