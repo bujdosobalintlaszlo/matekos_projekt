@@ -1,7 +1,7 @@
 
 var jelenlegi;
     var dolgozatIdTomb = [];
-var kivesz = [];
+var kell = [];
 var feladatDolgozat;
 function DolgozatokGen(){
     document.body.innerHTML="";
@@ -27,6 +27,11 @@ function DolgozatokGen(){
             <li class="nav-item">
                 <input type="button" value="Kivesz" class="btn btn-light terKoz" onclick="Kivesz()">
             </li>
+        </span>
+        <span>
+                <li class="nav-item">
+                    <input type="button" value="Vissza" class="btn btn-light terKoz" onclick="Ment()">
+                </li>
         </span>
     </div>
     </div>
@@ -101,6 +106,8 @@ function FeladatokFeltoltDolgozat(divId) {
   //meg tombbe kell menteni mi kerul be
   function Hozzaad(elem,id){
       if(elem.dataset.adattag == "jobbra"){
+          kell.push(id);
+          console.log(kell);
           document.getElementById("feladatok").appendChild(elem.parentElement);
           document.getElementById(`svg${id}`).innerHTML="";
           document.getElementById(`svg${id}`).innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
@@ -108,12 +115,17 @@ function FeladatokFeltoltDolgozat(divId) {
           document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
       }
       else if(elem.dataset.adattag == "balra"){
+        let indexToRemove = kell.indexOf(id); // Megkeressük az id-nek megfelelő indexet a kell tömbben
+        if (indexToRemove !== -1) { // Ellenőrizzük, hogy az elem megtalálható-e a tömbben
+            kell.splice(indexToRemove, 1); // Az elemet eltávolítjuk a tömbből
+            console.log(kell);
+        }
         document.getElementById("kereses").appendChild(elem.parentElement);
         document.getElementById(`svg${id}`).innerHTML="";
         document.getElementById(`svg${id}`).innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
       </svg>`;
-      document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
+      document.getElementById(`maindiv${id}`).dataset.adattag = "jobbra";
       }
 }
   function MegjelenitHozzaadottFeladat(arr,hely){
@@ -160,4 +172,85 @@ function SzambolTemakor (index){
         p.classList.add("temakorP");
         p.innerHTML=valasz[0].tema;
     });
+}
+function Ment(){
+    document.body.innerHTML="";
+    document.body.innerHTML=`
+    <form>
+    <div class="mb-3" id="feladatnev">
+      <label for="exampleInputEmail1" class="form-label">Addja meg a feladatsor nevét!</label>
+      <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+      <div id="emailHelp" class="form-text">(Kötelező!)</div>
+    </div>
+    </form>
+    <div id="feladatsorDisplay"
+    </div>`;
+    FeladatDisplay();
+    /*
+    let length =kell.length;
+    for(var i=0;i<length;++i){
+        let sql = `Insert into feladatesfeladatsorkapcs Values(null,${kell[i]},null,${nev})`
+    }
+    */
+}
+var pontok =0;
+function FeladatDisplay(){
+    var osszeg = 0;
+    var length = kell.length;
+    var hely = document.getElementById("feladatsorDisplay");
+    var promises = []; // Tömb a Promise objektumok tárolására
+
+    for(var i = 1; i <= length; ++i){
+        var promise = FeladatInfo(i).then((valasz) => {  
+            console.log(parseInt(valasz.pontszam));  
+            osszeg += parseInt(valasz.pontszam);
+            console.log(osszeg);
+            hely.innerHTML += `<div id="megjelenfeladat${i}">
+                <p>Feladat neve: ${valasz.nev} Kategória:${valasz.tema} Pontszám:${valasz.pontszam}</p>
+            </div>`;
+        });
+        promises.push(promise);
+    }
+    Promise.all(promises).then(() => {
+        hely.innerHTML +=`<div id ="osszeg"></div>`;
+        AdatokGen(osszeg);
+        pontok = osszeg;
+        console.log(pontok + "-pontok");
+    });
+}
+
+function AdatokGen(osszeg){
+    var hely = document.getElementById("osszeg");
+    hely.innerHTML += `<p>Összes pontszám: ${osszeg}</p>`;
+    hely.appendChild(createTable());
+}
+
+async function FeladatInfo(i) {
+    let sql = `SELECT f.*, t.temakor AS tema 
+               FROM feladatok f 
+               JOIN temakor t ON f.temakorId = t.id 
+               WHERE f.id = ${i}`;
+    console.log(sql);
+    return LekerdezesEredmenye(sql).then((x) => {
+        console.log(x);
+        return x[0];
+    });
+}
+
+function createTable() {
+    var table = document.createElement("table");
+    var felso = 0;
+    var also = 0.1;
+
+    for (var i = 0; i < 5; i++) {
+        var row = table.insertRow();
+        for (var j = 0; j < 2; j++) {
+            var cell = row.insertCell();
+            cell.appendChild(document.createTextNode(`Jegy:${i+1}, Cell ${pontok / (pontok * also)}% - ${pontok / (pontok * felso)}%`));
+            cell.style.border = "1px solid black";
+            cell.style.padding = "8px";
+        }
+    }
+
+    return table;
 }
