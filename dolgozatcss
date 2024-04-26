@@ -1,0 +1,32 @@
+.navbar
+{
+    background-color: rgb(81, 142, 212);
+}
+
+#kereses{
+    border: 2px solid black;
+
+}
+#feladatok{
+    border: 2px solid black;
+
+}
+
+.sorszamplus{
+    display: flex;
+    vertical-align: middle;
+    background-color: lightblue;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    height:3rem;
+    width: 3.2rem;
+}
+
+#feladatsorDisplay{
+    border: 1px solid black;
+    margin: 20px;
+}
+
+#feladatnev{
+    margin: 20px;
+}
