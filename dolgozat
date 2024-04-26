@@ -1,8 +1,10 @@
 
 var jelenlegi;
-    var dolgozatIdTomb = [];
+var dolgozatIdTomb = [];
 var kell = [];
-var feladatDolgozat;
+var osztalyok = [];
+var idokorlat = "";
+var dolgozate = false;
 function DolgozatokGen(){
     document.body.innerHTML="";
     document.body.innerHTML = `
@@ -178,20 +180,40 @@ function Ment(){
     document.body.innerHTML=`
     <form>
     <div class="mb-3" id="feladatnev">
-      <label for="exampleInputEmail1" class="form-label">Addja meg a feladatsor nevét!</label>
-      <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+      <label for="feladatnevinfo" class="form-label">Addja meg a feladatsor nevét!</label>
+      <input type="text" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
       <div id="emailHelp" class="form-text">(Kötelező!)</div>
+      <label for="feladatnevinfo" class="form-label">Időkorlát</label>
+      <input type="time" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
+      <div id="emailHelp" class="form-text">(Nem Kötelező!)</div>
+      <label for="feladatnevinfo" class="form-label">Határidő</label>
+      <input type="date" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
+      <div id="emailHelp" class="form-text">(Nem Kötelező!)</div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate" onclick="DolgozatE()">
+        <label class="form-check-label" for="flexCheckIndeterminate">
+            Dolgozat?
+        </label>
+        </div>
+      <div class="dropdown">
+    <a class="btn btn-secondary dropdown-toggle col-12" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Osztályok
+    </a>
+
+    <ul class="dropdown-menu col-12" id="osztalyokvalaszt">
+        
+    </ul>
+    </div>
     </div>
     </form>
-    <div id="feladatsorDisplay"
+    <div id="feladatsorDisplay">
+    </div>
+    <div>
+    <input class="btn btn-secondary dropdown-toggle col-12" type="button" value="Jóváhagy" onclick="Felkuld()">
     </div>`;
+   
     FeladatDisplay();
-    /*
-    let length =kell.length;
-    for(var i=0;i<length;++i){
-        let sql = `Insert into feladatesfeladatsorkapcs Values(null,${kell[i]},null,${nev})`
-    }
-    */
+    OsztalyokBeir();
 }
 var pontok =0;
 function FeladatDisplay(){
@@ -213,8 +235,8 @@ function FeladatDisplay(){
     }
     Promise.all(promises).then(() => {
         hely.innerHTML +=`<div id ="osszeg"></div>`;
-        AdatokGen(osszeg);
         pontok = osszeg;
+        AdatokGen(osszeg);
         console.log(pontok + "-pontok");
     });
 }
@@ -241,16 +263,73 @@ function createTable() {
     var table = document.createElement("table");
     var felso = 0;
     var also = 0.1;
-
+    console
     for (var i = 0; i < 5; i++) {
         var row = table.insertRow();
-        for (var j = 0; j < 2; j++) {
+        for (var j = 0; j < 1; j++) {
             var cell = row.insertCell();
-            cell.appendChild(document.createTextNode(`Jegy:${i+1}, Cell ${pontok / (pontok * also)}% - ${pontok / (pontok * felso)}%`));
+            cell.appendChild(document.createTextNode(`Jegy:${i+1} Cell ${pontok / (pontok * also)}% - ${pontok / (pontok * felso)}%`));
             cell.style.border = "1px solid black";
             cell.style.padding = "8px";
         }
     }
 
     return table;
+}
+
+function OsztalyokBeir()
+{
+    let sql = `Select distinct f.osztaly as o from felhasznalok f where f.osztaly != "" and f.osztaly != "nan"`;
+    var hely = document.getElementById("osztalyokvalaszt");
+    LekerdezesEredmenye(sql).then((osztalyok) =>{
+        for(let i=0; i< osztalyok.length;++i){
+            hely.innerHTML +=`
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="osztaly${i}" onclick="OsztalyKezel('${osztalyok[i].o}')">
+            <label class="form-check-label" for="flexCheckIndeterminate">
+              ${osztalyok[i].o}
+            </label>
+          </div>`;
+        }
+    });
+}
+
+
+function OsztalyKezel(osztaly) {
+    const index = osztalyok.indexOf(osztaly);
+    if (index !== -1) {
+        osztalyok.splice(index, 1);
+    } else {
+        osztalyok.push(osztaly);
+    }
+}
+
+
+function Felkuld()
+{
+    let nev = document.getElementById("feladatnevinfo").value;
+    let sql = "";
+    if(FeladatlapNevCheck(nev)){
+        for(let i=0;i<osztalyok;++i){
+            sql += "Insert into feladatsor f Values(null,)";
+        }
+    }else{
+        alert("A név már foglalt");
+    }
+}
+
+function FeladatlapNevCheck(nev){
+    let sql = `Select ffk.FeladatNev as fnev from feladatsor f,feladatesfeladatsorkapcs ffk where feladatsor.id = ffk.feladatsorId`;
+    LekerdezesEredmenye(sql).then((nevek)=>{
+        if(nevek.includes(nev)){
+            return false;
+        }else{
+            return true;
+        }
+    });
+}
+
+function DolgozatE(){
+    !dolgozate ? dolgozate = true : dolgozate = false;
+    console.log(dolgozate);
 }
