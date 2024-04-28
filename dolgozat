@@ -1,4 +1,3 @@
-
 var jelenlegi;
 var dolgozatIdTomb = [];
 var kell = [];
@@ -15,35 +14,47 @@ function DolgozatokGen(){
             </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+           <span>
+           <form class="d-flex col-12" role="search">
+            <input class="form-control me-2" type="search" placeholder="Keresés" aria-label="Search" id="kerszo" onkeyup="Talal()">
+          </form>
+           </span>
             <span>
-                <li class="nav-item">
-                    <input type="button" value="Vissza" class="btn btn-light terKoz" onclick="Vissza()">
-                </li>
+            <input type="button" value="Összes" style="color:black;" class="btn btn-light terKoz" id="osszes" onclick="Osszes2()">
+      <input type="button" value="Középszint" style="color:green;" class="btn btn-light terKoz" id="konnyuSzur" onclick="KozepSzur2()">
+      <input type="button" value="Emeltszint" style="color:orange" class="btn btn-light terKoz" id="emeltSzur" onclick="EmeltSzur2()">
+      <input type="button" value="Verseny feladat" style="color:red" class="btn btn-light terKoz" id="versenySzur" onclick="VersenySzur2()">
+      <input type="button" value="Jelöletlen nehézség" style="color:black" class="btn btn-light terKoz" id="jelSzur" onclick="JelSzur2()">
             </span>
-        <span>
-            <li class="nav-item">
-                <input type="button" value="Hozzáad" class="btn btn-light terKoz" onclick="Hozzaad()">
-            </li>
-        </span>
-        <span>
-            <li class="nav-item">
-                <input type="button" value="Kivesz" class="btn btn-light terKoz" onclick="Kivesz()">
-            </li>
-        </span>
+        <span id="lenyilo"><li class="nav-item">
+      <span><li class="nav-item"><div class="dropdown">
+      <button class="btn btn-light dropdown-toggle terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-bookmarks" viewBox="0 0 16 16">
+  <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+  <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
+</svg> Témák
+      </button>
+      <ul class="dropdown-menu" id="temakor">
+    
+        </ul>
+  </div>
+      </li></span>
         <span>
                 <li class="nav-item">
-                    <input type="button" value="Vissza" class="btn btn-light terKoz" onclick="Ment()">
+                    <input type="button" value="Feladatlap feltöltése" class="btn btn-light terKoz" onclick="Ment()" disabled id="ment">
                 </li>
         </span>
+        <span>
+        <li class="nav-item">
+            <input type="button" value="Vissza" class="btn btn-light terKoz" onclick="Vissza()">
+        </li>
+    </span>
     </div>
     </div>
 </nav>
     <div class="row">
       <div class="col" id="kereses">
-        <form class="d-flex col-md-6 col-s-12" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form><br>
+        
       </div>
       <div class="col-md-6 col-s-12" id="feladatok">
       <h1 id="cim">
@@ -53,6 +64,7 @@ function DolgozatokGen(){
     </div>
 </div>`;
 FeladatokFeltoltDolgozat("kereses");
+KategoriakGen2();
 }
 
 function FeladatokFeltoltDolgozat(divId) {
@@ -117,17 +129,23 @@ function FeladatokFeltoltDolgozat(divId) {
           document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
       }
       else if(elem.dataset.adattag == "balra"){
-        let indexToRemove = kell.indexOf(id); // Megkeressük az id-nek megfelelő indexet a kell tömbben
-        if (indexToRemove !== -1) { // Ellenőrizzük, hogy az elem megtalálható-e a tömbben
-            kell.splice(indexToRemove, 1); // Az elemet eltávolítjuk a tömbből
+        let indexToRemove = kell.indexOf(id);
+        if (indexToRemove !== -1) {
+            kell.splice(indexToRemove, 1);
             console.log(kell);
         }
         document.getElementById("kereses").appendChild(elem.parentElement);
         document.getElementById(`svg${id}`).innerHTML="";
         document.getElementById(`svg${id}`).innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-      </svg>`;
+      </svg>`;    
       document.getElementById(`maindiv${id}`).dataset.adattag = "jobbra";
+      console.log("vissza");
+      }
+      if(kell.length > 0){
+        document.getElementById("ment").disabled = false;
+      }else{
+        document.getElementById("ment").disabled = true;
       }
 }
   function MegjelenitHozzaadottFeladat(arr,hely){
@@ -143,7 +161,7 @@ function FeladatokFeltoltDolgozat(divId) {
           document.getElementById(ind).remove();
       }
   }
-
+  
 
 function FeladatKartyaGen(divId,hely)
 {
@@ -181,14 +199,14 @@ function Ment(){
     <form>
     <div class="mb-3" id="feladatnev">
       <label for="feladatnevinfo" class="form-label">Addja meg a feladatsor nevét!</label>
-      <input type="text" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
-      <div id="emailHelp" class="form-text">(Kötelező!)</div>
-      <label for="feladatnevinfo" class="form-label">Időkorlát</label>
-      <input type="time" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
-      <div id="emailHelp" class="form-text">(Nem Kötelező!)</div>
-      <label for="feladatnevinfo" class="form-label">Határidő</label>
-      <input type="date" class="form-control" id="feladatnevinfo" aria-describedby="emailHelp">
-      <div id="emailHelp" class="form-text">(Nem Kötelező!)</div>
+      <input type="text" class="form-control" id="feladatnevinfo" aria-describedby="feladatlpaneve">
+      <div id="feladatlapnevkot" class="form-text">(Kötelező!)</div>
+      <label for="megoldasiidolable" class="form-label">Időkorlát</label>
+      <input type="time" class="form-control" id="megoldasiido" aria-describedby="megoldasiido">
+      <div id="megoldasihatkot" class="form-text">(Nem Kötelező!)</div>
+      <label for="hataridolabel" class="form-label">Határidő</label>
+      <input type="date" class="form-control" id="hatarido" aria-describedby="hatarido">
+      <div id="hataridkot" class="form-text">(Nem Kötelező!)</div>
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate" onclick="DolgozatE()">
         <label class="form-check-label" for="flexCheckIndeterminate">
@@ -196,7 +214,7 @@ function Ment(){
         </label>
         </div>
       <div class="dropdown">
-    <a class="btn btn-secondary dropdown-toggle col-12" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a id="osztalyok" class="btn btn-secondary dropdown-toggle col-12" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Osztályok
     </a>
 
@@ -208,9 +226,12 @@ function Ment(){
     </form>
     <div id="feladatsorDisplay">
     </div>
-    <div>
-    <input class="btn btn-secondary dropdown-toggle col-12" type="button" value="Jóváhagy" onclick="Felkuld()">
-    </div>`;
+    <div id="jovahagydiv">
+    <input id="jovahagy" class="btn btn-secondary dropdown-toggle col-12" type="button" value="Jóváhagy" onclick="Felkuld()">
+    <input id="visszadoga" class="btn btn-secondary dropdown-toggle col-12" type="button" value="Vissza" onclick="VisszaDolgozatOsszeallitashoz()">
+    </div>
+    
+    `;
    
     FeladatDisplay();
     OsztalyokBeir();
@@ -220,7 +241,7 @@ function FeladatDisplay(){
     var osszeg = 0;
     var length = kell.length;
     var hely = document.getElementById("feladatsorDisplay");
-    var promises = []; // Tömb a Promise objektumok tárolására
+    var promises = [];
 
     for(var i = 1; i <= length; ++i){
         var promise = FeladatInfo(i).then((valasz) => {  
@@ -228,7 +249,7 @@ function FeladatDisplay(){
             osszeg += parseInt(valasz.pontszam);
             console.log(osszeg);
             hely.innerHTML += `<div id="megjelenfeladat${i}">
-                <p>Feladat neve: ${valasz.nev} Kategória:${valasz.tema} Pontszám:${valasz.pontszam}</p>
+                <p style="margin:20px">Feladat neve: ${valasz.nev}, Kategória: ${valasz.tema}, Pontszám: ${valasz.pontszam} pont.<br><hr></p>
             </div>`;
         });
         promises.push(promise);
@@ -237,14 +258,13 @@ function FeladatDisplay(){
         hely.innerHTML +=`<div id ="osszeg"></div>`;
         pontok = osszeg;
         AdatokGen(osszeg);
-        console.log(pontok + "-pontok");
+        console.log(pontok + "- pontok");
     });
 }
 
 function AdatokGen(osszeg){
     var hely = document.getElementById("osszeg");
     hely.innerHTML += `<p>Összes pontszám: ${osszeg}</p>`;
-    hely.appendChild(createTable());
 }
 
 async function FeladatInfo(i) {
@@ -257,24 +277,6 @@ async function FeladatInfo(i) {
         console.log(x);
         return x[0];
     });
-}
-
-function createTable() {
-    var table = document.createElement("table");
-    var felso = 0;
-    var also = 0.1;
-    console
-    for (var i = 0; i < 5; i++) {
-        var row = table.insertRow();
-        for (var j = 0; j < 1; j++) {
-            var cell = row.insertCell();
-            cell.appendChild(document.createTextNode(`Jegy:${i+1} Cell ${pontok / (pontok * also)}% - ${pontok / (pontok * felso)}%`));
-            cell.style.border = "1px solid black";
-            cell.style.padding = "8px";
-        }
-    }
-
-    return table;
 }
 
 function OsztalyokBeir()
@@ -309,6 +311,9 @@ function Felkuld()
 {
     let nev = document.getElementById("feladatnevinfo").value;
     let sql = "";
+    let megoldido = document.getElementById("megoldasiido").value;
+    let hatarido = document.getElementById("hatarido").value;
+    /*
     if(FeladatlapNevCheck(nev)){
         for(let i=0;i<osztalyok;++i){
             sql += "Insert into feladatsor f Values(null,)";
@@ -316,6 +321,7 @@ function Felkuld()
     }else{
         alert("A név már foglalt");
     }
+    */
 }
 
 function FeladatlapNevCheck(nev){
@@ -333,3 +339,28 @@ function DolgozatE(){
     !dolgozate ? dolgozate = true : dolgozate = false;
     console.log(dolgozate);
 }
+
+async function TemakorSzures2(id) {
+    szurt=[];
+    const length = await TemakorCount();
+    for (let index = 1; index <= length; index++) {
+        if (document.getElementById(`${index}`).checked) {
+            szurt = szurt.concat(feladatok.filter(x => x.temakorId == index));
+        }
+    }
+    if (szurt.length==0) {
+        szurt=feladatok;
+    }
+    eredetiSzurt=szurt;
+    MegjelenitItems2();
+}
+
+
+
+
+function VisszaDolgozatOsszeallitashoz()
+{
+    DolgozatokGen();
+}
+
+
