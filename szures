@@ -1,33 +1,21 @@
 //Szintszureshez valotozok
-var OsszesSzur = false;
-var kozepSzur = false;
-var emeltSzur = false;
-var versenySzur = false;
-var jelSzur = false;
+var OsszesSzur = false ,kozepSzur = false, emeltSzur = false,versenySzur = false,jelSzur = false;
 //------------------
-var kat = false;
-
 //ebbe gyujtjuk a kiszurt feladatokat es jelenitjuk meg(ez egy tomb)
-var szurt =[];
-var eredetiSzurt=[];
+var szurt =[],eredetiSzurt=[];
 //--------------
 
-function szur() {
-    console.log(eredetiSzurt,szurt);
+function Szur() {
     szurt =[];
     if (kozepSzur) {
         szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "0"));
-    } 
-    if (emeltSzur) {
+    } if (emeltSzur) {
         szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "1"));
-    } 
-    if (versenySzur) {
+    } if (versenySzur) {
         szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "2"));
-    } 
-    if (jelSzur) {
+    } if (jelSzur) {
         szurt = szurt.concat(eredetiSzurt.filter(x => parseInt(x.nehezseg) >= 3));
-    } 
-    if (!(jelSzur || kozepSzur || emeltSzur || versenySzur)) {
+    } if (!(jelSzur || kozepSzur || emeltSzur || versenySzur)) {
         szurt=eredetiSzurt;
     }
     MegjelenitItems();
@@ -35,48 +23,58 @@ function szur() {
 
 function KozepSzur() {
     kozepSzur=!kozepSzur;
-    szur();
+    Szur();
 }
 
 function EmeltSzur() {
     emeltSzur=!emeltSzur;
-    szur();
+    Szur();
 }
 
 
 function VersenySzur() {
     versenySzur=!versenySzur;
-    szur();
+    Szur();
 }
 
 function JelSzur() {
     jelSzur=!jelSzur;
-    szur();
+    Szur();
 }
 
-function Osszes() {
-    document.getElementById("jobb").innerHTML = "";
-    FeladatokFeltolt("jobb");
-    OsszesSzur = false;
+async function TemakorCount() {
+    let lekerdezes = 'Select Count(*) as db from temakor t';
+    const eredmeny = await LekerdezesEredmenye(lekerdezes);
+    return eredmeny[0].db;
+}
+
+async function Osszes() {
+    szurt = feladatok;
+    const length = await TemakorCount();
+    for (let index = 1; index <= length; index++) {
+        document.getElementById(`${index}`).checked = false;
+    }
+    MegjelenitItems(feladatok);
     kozepSzur = false;
     emeltSzur = false;
     versenySzur = false;
     jelSzur = false;
 }
 
-function TemakorSzures(id) {
-    if (document.getElementById(id).checked) {
-        szurt = eredetiSzurt.filter(x => x.temakorId == id);
-        MegjelenitItems();
-    } else {
-        szurt = szurt.filter(x => x.temakorId != id);
-        MegjelenitItems();
-    }
 
-    if(szurt.length === 0){
-        Osszes();
+async function TemakorSzures(id) {
+    szurt=[];
+    const length = await TemakorCount();
+    for (let index = 1; index <= length; index++) {
+        if (document.getElementById(`${index}`).checked) {
+            szurt = szurt.concat(feladatok.filter(x => x.temakorId == index));
+        }
+    }
+    if (szurt.length==0) {
+        szurt=feladatok;
     }
     eredetiSzurt=szurt;
+    MegjelenitItems();
 }
  function MegjelenitItems(){
         var hely = document.getElementById("jobb");
@@ -102,4 +100,197 @@ function TemakorSzures(id) {
         hely.appendChild(div);
         hely.appendChild(document.createElement("br"));
     });
- }
+}
+
+
+function MegjelenitItems2(){
+    var hely = document.getElementById("kereses");
+    hely.innerHTML="";  
+    szurt.forEach(adattag=>{
+    let div = document.createElement("div");
+    div.id = adattag.id;
+    div.classList.add("feladat");
+    div.classList.add("col-12");
+    div.classList.add("row");
+    let szinResult = Szinez(adattag.nehezseg);
+    div.innerHTML = `
+    <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+                    <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                  </svg></p>
+                </div>
+                <div class="feladatNev col-5">
+                    <p>${adattag.nev}</p>
+                </div>
+                <div class="feladatTemakor col-5">
+                    <p id="temakorP"></p>
+                </div>`;
+    TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+    hely.appendChild(div);
+    hely.appendChild(document.createElement("br"));
+});
+}
+
+function KategoriakGen2(){
+    var hely = document.getElementById("temakor");
+    let sql = `select * from temakor`
+    LekerdezesEredmenye(sql).then((valasz) =>{
+        valasz.forEach(elem =>{
+            hely.innerHTML +=
+            `<div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="${elem.id}" onclick="TemakorSzures2(${elem.id})">
+                    <label class="form-check-label" for="flexCheckDefault">${elem.temakor}</label>
+            </div>`;
+            });
+        }); 
+    }
+
+    function Szur2() {
+        szurt =[];
+        if (kozepSzur) {
+            szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "0"));
+        } if (emeltSzur) {
+            szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "1"));
+        } if (versenySzur) {
+            szurt = szurt.concat(eredetiSzurt.filter(x => x.nehezseg == "2"));
+        } if (jelSzur) {
+            szurt = szurt.concat(eredetiSzurt.filter(x => parseInt(x.nehezseg) >= 3));
+        } if (!(jelSzur || kozepSzur || emeltSzur || versenySzur)) {
+            szurt=eredetiSzurt;
+        }
+        MegjelenitItems2();
+    }
+    
+    function KozepSzur2() {
+        kozepSzur=!kozepSzur;
+        Szur2();
+    }
+    
+    function EmeltSzur2() {
+        emeltSzur=!emeltSzur;
+        Szur2();
+    }
+    
+    
+    function VersenySzur2() {
+        versenySzur=!versenySzur;
+        Szur2();
+    }
+    
+    function JelSzur2() {
+        jelSzur=!jelSzur;
+        Szur2();
+    }
+    
+    async function TemakorCount2() {
+        let lekerdezes = 'Select Count(*) as db from temakor t';
+        const eredmeny = await LekerdezesEredmenye(lekerdezes);
+        return eredmeny[0].db;
+    }
+    
+    async function Osszes2() {
+        szurt = feladatok;
+        const length = await TemakorCount2();
+        for (let index = 1; index <= length; index++) {
+            document.getElementById(`${index}`).checked = false;
+        }
+        MegjelenitItems2(feladatok);
+        kozepSzur = false;
+        emeltSzur = false;
+        versenySzur = false;
+        jelSzur = false;
+        
+    }
+    async function Osszes3() {
+        szurt = feladatok;
+        const length = await TemakorCount2();
+        for (let index = 1; index <= length; index++) {
+            document.getElementById(`${index}`).checked = false;
+        }
+        MegjelenitItems2(feladatok);
+        kozepSzur = false;
+        emeltSzur = false;
+        versenySzur = false;
+        jelSzur = false;
+        document.getElementById("kerszo").value = "";
+    }
+    function Talal() {
+        var van = false;
+        console.log(van + "-van");
+        let keresett = document.getElementById("kerszo").value;
+        let hely = document.getElementById("kereses");
+        hely.innerHTML = "";
+        if(szurt.length == 0){
+            feladatok.forEach(adattag => {
+                if (adattag.nev.includes(keresett) || adattag.nev.includes(keresett.toUpperCase()) || adattag.nev.includes(keresett.toLowerCase())) {
+                    let div = document.createElement("div");
+                    div.id = adattag.id;
+                    div.classList.add("feladat");
+                    div.classList.add("col-12");
+                    div.classList.add("row");
+        
+                    let szinResult = Szinez(adattag.nehezseg);
+        
+                    div.innerHTML = `
+                        <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+                            <p id="svg${adattag.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                </svg>
+                            </p>
+                        </div>
+                        <div class="feladatNev col-5">
+                            <p>${adattag.nev}</p>
+                        </div>
+                        <div class="feladatTemakor col-5">
+                            <p id="temakorP"></p>
+                        </div>`;
+        
+                    TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+                    hely.appendChild(div);
+                    hely.appendChild(document.createElement("br"));
+                    console.log(van + "-van");
+                    van = true;
+                }
+            });
+        }else{
+            console.log(van + "-van");
+            szurt.forEach(adattag => {
+                if (adattag.nev.includes(keresett)) {
+                    let div = document.createElement("div");
+                    div.id = adattag.id;
+                    div.classList.add("feladat");
+                    div.classList.add("col-12");
+                    div.classList.add("row");
+        
+                    let szinResult = Szinez(adattag.nehezseg);
+        
+                    div.innerHTML = `
+                        <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+                            <p id="svg${adattag.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                </svg>
+                            </p>
+                        </div>
+                        <div class="feladatNev col-5">
+                            <p>${adattag.nev}</p>
+                        </div>
+                        <div class="feladatTemakor col-5">
+                            <p id="temakorP"></p>
+                        </div>`;
+        
+                    TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+                    hely.appendChild(div);
+                    hely.appendChild(document.createElement("br"));
+                    van = true;
+                }
+            });
+        }
+        
+        console.log(van + "-van");
+        if (van === false) {
+            console.log(van + "-van");
+            hely.innerHTML = `<a onclick="Osszes3()">Nincs ilyen feladat. Nyomj a feliratra vagy az összesre, hogy lásd a feladatokat!</a>`;
+        }
+    }
