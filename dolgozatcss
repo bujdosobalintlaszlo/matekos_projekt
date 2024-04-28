@@ -30,3 +30,20 @@
 #feladatnev{
     margin: 20px;
 }
+
+#jovahagydiv{
+    margin: 20px;
+}
+
+#visszadoga{
+    margin-bottom: 10px;
+}
+
+#jovahagy{
+    margin-bottom: 10px;
+}
+
+#osztalyok{
+    margin-top: 10px;
+}
+
