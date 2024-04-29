@@ -8,3 +8,4 @@
 # Új hibák: ha az email jo es a jelszo rossz nincs hibajelzes(bejelentkezes)!
 # A session storaget uritgetni pl 10-vel es az ujjakat betolteni
 # feladatmegoldasnal menu: vissza, feladatok(oldalt lenyilo scrollozhato menu amiben a temaval azonos feladatok jelennek meg),kijelentkezes
+Szures, ha elsonek a szinteket akarom szurni buggos
