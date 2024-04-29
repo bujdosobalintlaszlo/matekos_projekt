@@ -307,32 +307,45 @@ function OsztalyKezel(osztaly) {
 }
 
 
-function Felkuld()
-{
+async function Felkuld() {
     let nev = document.getElementById("feladatnevinfo").value;
     let sql = "";
     let megoldido = document.getElementById("megoldasiido").value;
     let hatarido = document.getElementById("hatarido").value;
-    /*
-    if(FeladatlapNevCheck(nev)){
-        for(let i=0;i<osztalyok;++i){
-            sql += "Insert into feladatsor f Values(null,)";
-        }
-    }else{
+    
+    let isFoglalt = await FeladatlapNevCheck(nev);
+    let utolsoid = `SELECT f.id FROM feladatsor f ORDER BY f.id DESC LIMIT 1;`;
+    let sql2 = "";
+
+    if (!isFoglalt) {
+        sql += ( `Insert into feladatsor Values(null,'${megoldido}',${dolgozate == true ? 1 : 0},${sessionStorage.fnid},'${hatarido}','${osztalyok[0]}');`);
+        console.log(sql);
+        LekerdezesEredmenye(sql).then((feladatok) =>{
+            console.log(feladatok);
+        }).then(()=> {
+            LekerdezesEredmenye(utolsoid).then((x)=>{
+                for(let i =0;i<kell.length;++i){
+                    //sql2 += `Insert into feladatesfeladatsorkapcs Values(${kell[i]},${x[0].id},'${nev}');`;
+                    sql2 = `Insert into feladatesfeladatsorkapcs Values(${kell[i]},${x[0].id},'${nev}');`;
+                     LekerdezesEredmenye(sql2).then((y) =>{
+                         console.log(y);
+                     });}
+                    alert("Sikeres feltöltés");
+                })});
+    } else {
         alert("A név már foglalt");
     }
-    */
+}
+ function MasodikFeltolt(sql2){
+    LekerdezesEredmenye(sql2).then((y) =>{
+        console.log(y);
+    });
 }
 
-function FeladatlapNevCheck(nev){
+async function FeladatlapNevCheck(nev) {
     let sql = `Select ffk.FeladatNev as fnev from feladatsor f,feladatesfeladatsorkapcs ffk where feladatsor.id = ffk.feladatsorId`;
-    LekerdezesEredmenye(sql).then((nevek)=>{
-        if(nevek.includes(nev)){
-            return false;
-        }else{
-            return true;
-        }
-    });
+    let nevek = await LekerdezesEredmenye(sql);
+    return nevek.includes(nev);
 }
 
 function DolgozatE(){
@@ -362,5 +375,4 @@ function VisszaDolgozatOsszeallitashoz()
 {
     DolgozatokGen();
 }
-
 
