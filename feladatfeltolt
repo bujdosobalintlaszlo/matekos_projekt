@@ -1,71 +1,289 @@
-var feladatok = [];
-function FeladatListaz() {
-  let sqlFeladatok = `Select * from feladatok`;
-
-  LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
-      valasz.forEach(adat => {
-          feladatok.push({
-              id: adat.id,
-              temakor: adat.temakor,
-              megoldas: adat.megoldas,
-              nehezseg: adat.nehezseg,
-              pontszam: adat.pontszam,
-              nev: adat.nev
-          });
-      });
-
-      FeladatokFeltolt("jobb");
-  });
-}
-
-function FeladatokFeltolt(divId) {
-  var hely = document.getElementById(divId);
-  feladatok.forEach(adattag => {
-      let div = document.createElement("div");
-      div.id = adattag.id;
-      div.classList.add("feladat");
-      div.classList.add("col-12");
-      ///div.classList.add("row");
-      let szinResult = Szinez(adattag.nehezseg);
-
-      div.innerHTML = `
-      <div class="sorszam" id="${adattag.id}" style="background-color: ${szinResult.color}">
-          <p class=" col-1">${adattag.id}.</p>
-      </div>
-      <div class="col-11 col-sm-7">
-      <p class="feladatNevP">${adattag.nev}</p>
-      </div>
-
-      <div class="col-sm-4  d-none d-sm-block ">
-      <p class="temakorP">${adattag.temakor}</p>
-  </div>
-  `;
-
-      hely.appendChild(div);
-      hely.appendChild(document.createElement("br"));
-  });
-}
-
-function Szinez(nehezseg) 
+function Feltoltes()
 {
-  let result = {
-      color: "",
-      text: ""
-  };
+  document.body.innerHTML +="";
+  document.body.innerHTML =`<nav class="navbar">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"><button type="button" class="btn btn-light" onclick="VisszaMenu()">Vissza</button></span>
+  </div>
+</nav>
+<div id="tartalom">
+  <div class="row row-cols-2">
+    <div class="col-12 col-xl-6">
+      <form id="hozaadasForm">
+        <div class="mb-3">
+          <label for="hozaadasForm" class="form-label"><h3><b>Feladat neve</b><span id="infoSpan" onmouseover="showHovered()" onmouseout="hideHovered()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+          </svg>
+      </span>
+      <span id="hoveredInfoSpan" onclick="Info()" data-bs-toggle="modal" data-bs-target="#feladatmodal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+          </svg>
+      </span></h3></label>
+          <textarea class="form-control" id="feladatNevForm" rows="1" maxlength="50" onkeyup="BeirCim()"></textarea>
+        </div>
+        <div class="mb-1">
+          <label for="hozaadasForm" class="form-label"><h3><b>Feladat szövege:</b></h3></label>
+          <textarea class="form-control" id="feladatForm" rows="3" maxlength="500" onkeyup="BeirFeladat()"></textarea>
+        </div>
+        <div class="mb-2">
+          <label for="hozaadasForm" class="form-label"><h3><b>Megoldás:</b></h3></label>
+          <textarea class="form-control" id="megoldasForm" rows="1" maxlength="250" onkeyup="BeirMegoldas()"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="hozaadasForm" class="form-label"><h3><b>Nehézségi szint:</b></h3></label>
+          <br>
+          <div class="btn-group">
+          <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="aktNehezseg">
+            Nehézség
+          </button>
+          <ul class="dropdown-menu" id="feltoltNehezseg">
+            <li onclick="NehesegAtir('Közép')" ><a class="dropdown-item" id="szint1"  href="#">Közép</a></li>
+            <li onclick="NehesegAtir('Emelt')" ><a class="dropdown-item" href="#" id="szint2">Emelt</a></li>
+            <li onclick="NehesegAtir('Verseny')"><a class="dropdown-item" href="#" id="szint3">Verseny</a></li>
+            <li onclick="NehesegAtir('Jelöletlen')"><a class="dropdown-item" href="#" id="szint4">Jelöletlen</a></li>
 
-  if (nehezseg == "0") {
-      result.color = "green";
-      result.text = "Középszint";
-  } else if (nehezseg == "1") {
-      result.color = "orange";
-      result.text = "Emeltszint";
-  } else if (nehezseg == "2") {
-      result.color = "red";
-      result.text = "Verseny feladat";
-  } else {
-      result.color = "black";
-      result.text = "-";
+          </ul>
+        </div>
+  <div class="dropdown-menu">
+  
+  </div>
+</div>
+
+          <div class="mb-3">
+          <label for="hozaadasForm" class="form-label"><h3><b>Kategória:</b></h3></label>
+          <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="aktKateg">
+    Témakör
+  </button>
+  <ul class="dropdown-menu" id="feltoltTema">
+    
+  </ul>
+  <input type="hidden" value="-1" id="feltoltId">
+</div>
+        </div>
+        <div class="mb-3">
+          <label for="hozaadasForm" class="form-label"><h3><b>Pontszám:</b></h3></label>
+          <textarea class="form-control" id="pontszamForm" rows="1" maxlength="250" onkeyup="BeirPontszam()"></textarea>
+        </div>
+      </form>
+      <input type="button" value="Jóváhagy" onclick="Jovahagy()" data-bs-toggle="modal" data-bs-target="#Megerosit">
+      <div class="modal" tabindex="-1"  style="display: none;" id="jovahagyOutput">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+    <div class="col-12 col-xl-6" id="megjelenit"><h3><b>Megjelenés:</b></h3>
+    <h3 id="FeladatNev"></h3>
+    <p id="szint"></p><br>
+    <p id="feladat"></p>
+    <p>Válasz:</p><input type="text" id="megoldas" disabled class="col-12">
+    <p id="kategoria">Kategória:</p>
+    <p id="pontszam"></p>
+  </div>
+</div>
+</div>
+<div class="modal fade" id="feladatmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" data-bs-theme="dark">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Regisztrációhoz hasznos lehet:</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <h4>A Feladat neve ne legyen olyan hogy...</h4>
+          <ul>
+              <li style="margin-left: 20px;"><b>(Pl.: 87old. 5)</b>, mivel nem lehet tudni melyik tankönyv és a későbbiekben zavart okozhat!</li>
+              <li style="margin-left: 20px;"><b>Házi feladat</b></li>
+              <li style="margin-left: 20px;"><b>1. feladat</b> vagy ehhez hasonló</li>
+              <li style="margin-left: 20px;">A <b>témakör neve</b> (pl.: Kombinatorika vagy kombinatorika 1)</li>
+              <li style="margin-left: 20px;">2023 máj. 10 <b>középszint</b>, mivel azt külön mezőben kell megadni!</li>
+          </ul>
+          <h4>A feladat neve legyen...</h4>
+          <ul>
+              <li style="margin-left: 20px;"><b>Tömör</b>, lényegretörő</span></li>
+              <li style="margin-left: 20px;">Akár tankönyvből is csak <b>pontos névvel</b>. (Pl.: Egységes matekérettségi fgy. II. 237 old. 2347)</span></li>
+              <li style="margin-left: 20px;">Akár érettségi, versenyfeladat <b>pontos vévvel</b>. (Pl.: 2023 máj.10).</span></li>
+          </ul>
+      </div>
+      
+      <br>
+    </div>
+  </div>
+</div>`;
+FeltoltesKateg();
+}
+
+function FeltoltesKateg(){
+  console.log("almafa");
+  var hely = document.getElementById("feltoltTema");
+  let sql = `select * from temakor`;
+  //console.log("Eredmeny");
+  let id = 1;
+  LekerdezesEredmenye(sql).then((valasz) =>{
+    console.log(valasz, "korte");
+      valasz.forEach(elem =>{
+        hely.innerHTML +=
+        `
+        <li onclick="TemakorAtir('${elem.temakor}','${id}')"><a class="dropdown-item" href="#" id="kateg${id}">${elem.temakor} </a></li>`;
+        id++;
+      });
+  }); 
+}
+function TemakorAtir(temakor,id){
+  var gomb = document.getElementById("aktKateg");
+  document.getElementById("feltoltId").value=id;
+  gomb.innerText = ""+temakor;
+
+}
+function NehesegAtir(szint){
+  //console.log(szint);
+  var nehezseg = document.getElementById("aktNehezseg").value.split('-')[0];
+  //console.log(nehezseg,"A nehézség:");
+  var gomb = document.getElementById("aktNehezseg");
+  gomb.innerText = ""+szint;
+}
+
+
+function BeirCim()
+{
+    var nev = document.getElementById("feladatNevForm").value;
+    console.log(nev);
+    document.getElementById("FeladatNev").innerHTML = `${nev}`;
+}
+function BeirKategoria()
+{
+  var kat = document.getElementById("kategoriaForm").value;
+  document.getElementById("kategoria").innerHTML = `Kategória: ${kat}`;
+}
+function BeirFeladat() {
+  var feladatInput = document.getElementById("feladatForm").value;
+  var output = document.getElementById("feladat");
+  output.innerHTML = `<span>${feladatInput}</span>`;
+  typesetOutput(output);
+}
+function typesetOutput(outputElement) {
+  MathJax.texReset();
+  MathJax.typesetClear();
+  MathJax.typesetPromise([outputElement]).catch(function (err) {
+      outputElement.innerHTML = '';
+      outputElement.appendChild(document.createTextNode(err.message));
+      console.error(err);
+  });
+}
+window.MathJax = {
+  loader: {load: ['input/asciimath']},
+  startup: {
+    pageReady: function () {
+        var input = document.getElementById('feladatForm');
+        var output = document.getElementById('feladat');
+        output.innerHTML = input.value.trim();
+        window.typesetInput = function () {
+          output.innerHTML = input.value.trim();
+          MathJax.texReset();
+          MathJax.typesetClear();
+          MathJax.typesetPromise([output]).catch(function (err) {
+            output.innerHTML = '';
+            output.appendChild(document.createTextNode(err.message));
+            console.error(err);
+          });
+        }
+        input.oninput = typesetInput;
+      }
+  },
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    processEscapes: true
+  }
+};
+var script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+script.setAttribute('id', 'MathJax-script');
+document.head.appendChild(script); 
+
+function BeirMegoldas()
+{
+    var nev = document.getElementById("megoldasForm").value;
+    console.log(nev);
+    document.getElementById("megoldas").placeholder = `${nev}`;
+}
+
+function BeirNehezeseg()
+{
+    var nehezseg = document.getElementById("szintForm").value;
+        nehezseg === "0" ? document.getElementById("szint").innerHTML = `Középszint` : (nehezseg === "1" ? document.getElementById("szint").innerHTML = `Emelt szint` :(nehezseg ==="2" ? document.getElementById("szint").innerHTML = `Verseny feladat` : document.getElementById("szint").innerHTML = `-`));
+}
+
+function BeirPontszam()
+{
+    var nev = document.getElementById("pontszamForm").value;
+    //console.log(nev);
+    document.getElementById("pontszam").innerHTML = `${nev} pont`;
+}
+
+function VisszaMenu()
+{
+  location.reload();
+}
+
+
+  function Jovahagy()
+  {
+    var kateg = document.getElementById("feltoltId").value;
+    console.log(kateg);
+    var nehezseg = document.getElementById("aktNehezseg").innerText;
+    console.log(nehezseg);
+    var szint;
+    if(nehezseg == "Közép"){
+      szint = 0;
+    }else if(nehezseg == "Emelt"){
+      szint = 1;
+    }else if(nehezseg == "Verseny"){
+      szint = 2;
+    }else if(nehezseg == "Jelöletlen"){
+      szint = 3;
+    }
+    let sql2 = `select t.id from temakor t where t.temakor = '${kateg}'`;
+    console.log(sql2);
+    let sql =`Insert into feladatok values(null,${kateg},'${document.getElementById("megoldasForm").value}',${szint},${document.getElementById("pontszamForm").value.replace("pont","")},'${document.getElementById("feladatNevForm").value}','${document.getElementById("feladatForm").value}') `;
+    console.log(sql); 
+    LekerdezesEredmenye(sql).then((valasz) =>{
+      console.log(valasz);
+    });
+    var div = document.getElementById("jovahagyOutput");
+    div.style.display = "block";
+    
   }
 
-  return result;
+  function showHovered() {
+    document.getElementById('infoSpan').style.display = 'none';
+    document.getElementById('hoveredInfoSpan').style.display = 'inline';
 }
+
+function hideHovered() {
+    document.getElementById('infoSpan').style.display = 'inline';
+    document.getElementById('hoveredInfoSpan').style.display = 'none';
+}
+
+
+function Info()
+{
+
+}
+
