@@ -1,0 +1,417 @@
+function FooldalgenReg(nev,email){
+    document.body.innerHTML +="";
+    document.body.innerHTML =`<nav class="navbar navbar-expand-lg" id="nav">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#" id="fnhely"></a><span>   </span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+      <span><li class="nav-item">
+      <button class="btn btn-light terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="Feladatok()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-list" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+</svg> Feladatok
+      </button>
+      </li></span>
+      <span id="dolgozat" style="display :none"><li class="nav-item">
+      <button class="btn btn-light terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="DolgozatokGen()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-clipboard2-plus" viewBox="0 0 16 16">
+  <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z"/>
+  <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5z"/>
+  <path d="M8.5 6.5a.5.5 0 0 0-1 0V8H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V9H10a.5.5 0 0 0 0-1H8.5z"/>
+</svg> Dolgozat
+      </button>
+      </li></span>
+      <span><li class="nav-item">
+      <button class="btn btn-light terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="Kijelentkezes()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-person-x" viewBox="0 0 16 16">
+  <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708"/>
+</svg> Kijelentkezés
+      </button>
+      </li></span>
+      <span style="display :none" id="feltoltes"><li class="nav-item">
+      <button class="btn btn-light terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="Feltoltes()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+  <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5"/>
+  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+</svg> Feltöltés
+      </button>
+      </li></span>
+      <span style="display :none" id="dolgozatKitoltes"><li class="nav-item">
+      <button class="btn btn-light terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="DolgozatKitoltes()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+  <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5"/>
+  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+</svg> Dolgozatkitöltés
+      </button>
+      </li></span>
+      <span id="lenyilo"><li class="nav-item">
+      <span><li class="nav-item"><div class="dropdown">
+      <button class="btn btn-light dropdown-toggle terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-bookmarks" viewBox="0 0 16 16">
+  <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+  <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
+</svg> Témák
+      </button>
+      <ul class="dropdown-menu" id="temakor">
+    
+        </ul>
+  </div>
+  </li></span>
+  <span><li class="nav-item">
+  <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Teendők</button>
+      </li></span>
+    </ul>
+      
+      </div>
+      </div>
+    </div>
+  </nav>
+  <div class="scrollmenu" style="vertical-align: middle;">
+  <input type="button" value="Összes" style="color:black;" class="btn btn-light terKoz" id="osszes" onclick="Osszes()">
+  <input type="button" value="Középszint" style="color:green;" class="btn btn-light terKoz" id="konnyuSzur" onclick="KozepSzur()">
+  <input type="button" value="Emeltszint" style="color:orange" class="btn btn-light terKoz" id="emeltSzur" onclick="EmeltSzur()">
+  <input type="button" value="Verseny feladat" style="color:red" class="btn btn-light terKoz" id="versenySzur" onclick="VersenySzur()">
+  <input type="button" value="Jelöletlen nehézség" style="color:black" class="btn btn-light terKoz" id="jelSzur" onclick="JelSzur()">
+  <input type="button" value="Kategória" style="color:brown" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-light terKoz dropdown-toggle" id="kategoriaSzur" onclick="KategoriaSzur()">
+  <input type="button" value="Random feladat" style="color:purple" class="btn btn-light terKoz" id="randomFeladat" onclick="RandomFeladat()">
+  
+</div>
+  </div>
+    <div class="container col-12" id="jobb">
+    </div>
+    </div>
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Teendő feladatok</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body" id="teendok">
+    <p>Try scrolling the rest of the page to see this option in action.</p>
+  </div>
+</div>
+    `;
+  KategoriakGen();
+  TeendokBeir();
+  let sql = `select f.jog from felhasznalok f where f.email = '${email}'`;
+  console.log(sql);
+  LekerdezesEredmenye(sql).then((valasz) => {
+    console.log(valasz);
+    if (valasz[0].jog == "1") {
+        document.getElementById("feltoltes").style.display="block";
+        document.getElementById("dolgozat").style.display="block";
+      }else
+      {
+        document.getElementById("dolgozatKitoltes").style.display="block";
+      }
+  });
+  document.getElementById("fnhely").innerHTML=nev;
+  FeladatListaz();
+  }
+//Feladatok az adatbázisból  
+var feladatok = [];
+
+//Adatbázisból lekéri az összes feladatot, ezeket pedig a feladatok tömbben tárolja el.
+function FeladatListaz() {
+let sqlFeladatok = `Select * from feladatok`;
+
+LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
+    valasz.forEach(adat => {
+        feladatok.push({
+            id: adat.id,
+            temakorId: adat.temakorID,
+            megoldas: adat.megoldas,
+            nehezseg: adat.nehezseg,
+            pontszam: adat.pontszam,
+            nev: adat.nev,
+            feladat: adat.feladat
+        });
+    });
+    console.log(feladatok);
+    FeladatokFeltolt("jobb");
+});
+eredetiSzurt = feladatok;
+}
+
+function TeendokBeir(){
+    console.log("teendokbeir -------------------------");
+    let hely = document.getElementById("teendok");
+    let sql = `Select * from feladatsor f where f.osztaly = '${sessionStorage.osztalya}'`;
+    console.log(sql);
+    LekerdezesEredmenye(sql).then((teendok) =>{
+        console.log(teendok);
+        let kartyakHTML = '';
+        teendok.forEach(x=>{
+            let formattedDate = new Date(x.hatarido).toLocaleDateString('hu-HU');
+            kartyakHTML += `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
+        });
+        hely.innerHTML = kartyakHTML;
+    });
+}
+var feldatCount =0;
+var feladatsorId ="";
+function LapMegjelenit(id){
+    feladatsorId = id;
+    document.body.innerHTML="";
+    let sql = `Select * from feladatesfeladatsorkapcs f where f.feladatsorId = ${id}`;
+    console.log(sql);
+    LekerdezesEredmenye(sql).then((eredmeny) =>{
+        console.log("--------");
+        feldatCount = eredmeny.length;
+        document.body.innerHTML= `<nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <h3 class="navbar-brand">${eredmeny[0].FeladatNev}</h3>
+          <h3 class="d-flex" id="ido"></h3>
+        </div>
+      </nav>
+      <div id="feladatlapfeladatok">
+      </div>
+      <button type="button" class="btn btn-secondary col-12" onclick="Beadas()">Beadás</button>`;
+        eredmeny.forEach(x=>{
+            FeladatsorEleme(x.feladatId);
+        });
+        console.log("--------");
+        VisszaszamlaloIndit(id);
+    });
+}
+function FeladatsorEleme(x) {
+    let hely = document.getElementById("feladatlapfeladatok");
+    let sql = `Select * from feladatok f where f.id = ${x}`;
+    LekerdezesEredmenye(sql).then((kartyaadat) => {
+        console.log(kartyaadat);
+        hely.innerHTML += `<hr>
+            <div>
+            <div id="feladat${kartyaadat[0].id}">${kartyaadat[0].feladat}</div>
+            <br>
+            <input type="text" id="${kartyaadat[0].id}" class="valasz">
+            <br>
+            <br>
+            <p>${kartyaadat[0].pontszam} pont</p>
+            </div>
+        <hr>`;
+        // Várunk a MathJax betöltésére és beállítására
+        typesetOutput(document.getElementById(`feladat${kartyaadat[0].id}`));
+    });
+}
+
+var ora;
+var perc;
+var mp;
+
+function VisszaszamlaloIndit(id) {
+    let sql = `Select f.idoKorlat from feladatsor f where f.id = ${id}`;
+    LekerdezesEredmenye(sql).then((ido) => {
+        if (ido && ido.length > 0) {
+            let time = ido[0].idoKorlat; // Feltételezzük, hogy az idoKorlat a mező neve
+            let temp = time.split(':');
+            ora = parseInt(temp[0]);
+            perc = parseInt(temp[1]);
+            mp = 0;
+            console.log(`Óra:${ora} : Perc${perc} : Mp${mp}`);
+            Visszaszamlalo();
+        } else {
+            console.error("Az ido változó nem megfelelő típusú vagy üres.");
+        }
+    });
+}
+var timerId;
+var elteltIdo = 0;
+function Visszaszamlalo() {
+    let hely = document.getElementById("ido");
+    timerId = setInterval(() => {
+        if (mp == 0) {
+            mp = 59;
+            if (perc == 0) {
+                perc = 59;
+                if (ora == 0) {
+                    clearInterval(timerId);
+                    alert("Lejárt az idő");
+                    Beadas();
+                    return;
+                }
+                ora--;
+            } else {
+                perc--;
+            }
+        } else {
+            mp--;
+        }
+        hely.innerHTML = `${ora < 10 ? "0"+ora : ora}:${perc < 10 ? "0"+perc : perc}:${mp < 10 ? "0" + mp : mp}`;
+        elteltIdo++;
+    }, 1000);
+}
+
+
+
+
+
+function EloreLep()
+{
+
+}
+
+function VisszaLep()
+{
+    
+}
+
+function FeladatokFeltolt(divId) {
+    var hely = document.getElementById(divId);
+    feladatok.forEach(adattag => {
+        let div = document.createElement("div");
+        div.id = adattag.id;
+        div.classList.add("feladat");
+        div.classList.add("col-12");
+        div.classList.add("row");
+        div.addEventListener("click",FeladatMegjelenit);
+        let szinResult = Szinez(adattag.nehezseg);
+        div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+                <p>${adattag.id}.</p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="${adattag.id}temakorP"></p>
+            </div>
+        `;
+        TemakorBeiir(adattag.temakorId,`${adattag.id}temakorP`);
+        hely.appendChild(div);
+        hely.appendChild(document.createElement("br"));
+    });
+}
+function TemakorBeiir(id, pId){
+    let sql = `select temakor from temakor t where t.id = ${id}`;
+    LekerdezesEredmenye(sql).then((valasz) =>{
+        document.getElementById(pId).innerHTML = valasz[0].temakor;   
+    });
+}
+//A kártyák nehézségi színtjét jelzi színekkel. Ezt nehézség alapján dönti el.
+function Szinez(nehezseg) 
+{
+let result = {
+    color: "",
+    text: ""
+};
+
+if (nehezseg == "0") {
+    result.color = "green";
+    result.text = "Középszint";
+} else if (nehezseg == "1") {
+    result.color = "orange";
+    result.text = "Emeltszint";
+} else if (nehezseg == "2") {
+    result.color = "red";
+    result.text = "Verseny feladat";
+} else {
+    result.color = "black";
+    result.text = "-";
+}
+
+return result;
+}
+  
+function Kijelentkezes(){
+sessionStorage.clear();
+location.reload();
+}
+  
+window.onload = function() {
+BejelentkezettE();
+};
+
+function BejelentkezettE() {
+const nev = sessionStorage.getItem("fn");
+const email = sessionStorage.getItem("email");
+if (nev && email) {
+    FooldalgenReg(nev, email);
+    RegTeendokGet();
+} else {
+    console.log("Nem vagy bejelentkezve!");
+}
+
+}
+
+function KategoriakGen(){
+var hely = document.getElementById("temakor");
+let sql = `select * from temakor`
+LekerdezesEredmenye(sql).then((valasz) =>{
+    valasz.forEach(elem =>{
+        hely.innerHTML +=
+        `<div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="${elem.id}" onclick="TemakorSzures(${elem.id})">
+                <label class="form-check-label" for="flexCheckDefault">${elem.temakor}</label>
+        </div>`;
+        });
+    }); 
+}
+
+function Feladatok()
+{
+
+}
+
+function DolgozatKitoltes()
+{
+
+}
+
+function RandomFeladat(){
+    let sql = `SELECT MIN(id) AS minID, MAX(id) AS maxID FROM feladatok;`;
+    LekerdezesEredmenye(sql).then((ids)=>{
+        let id = randomNum(ids[0].minID,ids[0].maxID);
+        RandomFeladatMegjelenit(id);
+    });
+}
+
+var randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+var pontszam = 0;
+
+function Beadas() {
+    console.log("anyad");
+    var valaszok = document.getElementsByClassName("valasz");
+    var maxpont = 0;
+    for (let i = 0; i < valaszok.length; i++) {
+        let x = valaszok[i];
+        let sql = `Select f.megoldas as m,f.pontszam as p from feladatok f where f.id = ${x.id}`;
+        console.log(sql);
+        LekerdezesEredmenye(sql).then((valasz) => {
+            maxpont += valasz[0].p;
+            console.log(valasz);
+            if (valasz[0].m == x.value) {
+                pontszam += valasz[0].p;
+            }
+            // Ha ez az utolsó iteráció, akkor hívjuk meg az eredmény kiírását
+            if (i === valaszok.length - 1) {
+                EredmenyDisplay(maxpont,pontszam,(Math.round((pontszam/maxpont)*100)),`${Math.floor(elteltIdo / 3600).toString().padStart(2, '0')}:${Math.floor((elteltIdo % 3600) / 60).toString().padStart(2, '0')}:${(elteltIdo % 60).toString().padStart(2, '0')}`);
+                IntervallClear();
+            }
+        });
+    }
+}
+
+function IntervallClear(){
+    clearInterval(timerId);
+}
+
+function EredmenyDisplay(max,pont,szazalek,megoldIdo){
+    document.body.innerHTML="";
+    document.body.innerHTML=`<h1>Pontszám:<p style="color:red;"><b style="text-decoration:underline;">${pont}</b>/${max}</p></h1><br><hr><h1>${szazalek}%</h1><br><hr><h1>Megoldási idő:${megoldIdo}</h1>`;
+    EredmenyMent(megoldIdo,pont,szazalek);
+}
+function EredmenyMent(megoldIdo,pontszam,szazalek){
+    let felhasznId = `Select f.id from felhasznalok f where f.felhasznaloNev ='${sessionStorage.fn}'`;
+    console.log(felhasznId);
+    let info = "";
+    LekerdezesEredmenye(felhasznId).then((idja) =>{
+        console.log(idja[0].id)
+        info = `Insert into feladatesfelhasznalokapcs Values(${feladatsorId},${idja[0].id},'${megoldIdo}',${pontszam},${szazalek})`;
+        LekerdezesEredmenye(info).then((eredmeny) =>{
+            console.log(eredmeny);
+        });
+    });
+}
