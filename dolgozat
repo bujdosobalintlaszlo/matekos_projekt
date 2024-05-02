@@ -96,6 +96,7 @@ KategoriakGen2();
 function FeladatokFeltoltDolgozat(divId) {
     var hely = document.getElementById(divId);
     feladatok.forEach(adattag => {
+        console.log(adattag.id);
         let div = document.createElement("div");
         div.id = adattag.id;
         div.classList.add("feladat");
@@ -112,10 +113,10 @@ function FeladatokFeltoltDolgozat(divId) {
                 <p>${adattag.nev}</p>
             </div>
             <div class="feladatTemakor col-5">
-                <p id="temakorP"></p>
+                <p id="temakorP${adattag.id}"></p>
             </div>
         `;
-        TemakorBeiir(adattag.temakor);
+        TemakorBeiir(adattag.temakorId,`temakorP${adattag.id}`);
         hely.appendChild(div);
     });
   }
@@ -136,15 +137,16 @@ function FeladatokFeltoltDolgozat(divId) {
                 <p>${feladatok[divId-1].nev}</p>
             </div>
             <div class="feladatTemakor col-5">
-                <p id="temakorP"></p>
+                <p id="temakorP${divId-1}"></p>
             </div>
         `;
-        TemakorBeiir(feladatok[divId-1].temakorId);
+        TemakorBeiir(feladatok[divId-1].temakorId,`temakorP${divId-1}`);
         hely.appendChild(div);
         hely.appendChild(document.createElement("br"));
   }
   //meg tombbe kell menteni mi kerul be
   function Hozzaad(elem,id){
+    console.log(elem.dataset.adattag);
       if(elem.dataset.adattag == "jobbra"){
           kell.push(id);
           console.log(kell);
@@ -155,6 +157,10 @@ function FeladatokFeltoltDolgozat(divId) {
           document.getElementById(`maindiv${id}`).dataset.adattag = "balra";
       }
       else if(elem.dataset.adattag == "balra"){
+        console.log(szurt);
+        console.log(id);
+        if(szurt.some(item => item.id === id) || szurt.length == 0)
+        {
         let indexToRemove = kell.indexOf(id);
         if (indexToRemove !== -1) {
             kell.splice(indexToRemove, 1);
@@ -168,6 +174,7 @@ function FeladatokFeltoltDolgozat(divId) {
       document.getElementById(`maindiv${id}`).dataset.adattag = "jobbra";
       console.log("vissza");
       }
+    }
       if(kell.length > 0){
         document.getElementById("ment").disabled = false;
       }else{
