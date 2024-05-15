@@ -7,3 +7,4 @@
 -Feladatok tablaban a tema (100karakter hosszu legyen)
 # Dolgozat összeállítás
 # Kövi menüpont
+#ha nbme oldott meg feladatot akkor a helyezest kezelje le
