@@ -242,63 +242,82 @@ function TeendokBeir() {
 
   });
 }
-function OsszesMegoldandoFeladat(teendok){
+function OsszesMegoldandoFeladat(teendok) {
   document.getElementById("jobb").remove();
-document.getElementById("esemenyek").remove();
-document.getElementById("oldalvalto").remove();
-document.getElementById("fooldalszuresnav").remove();
-  console.log(teendok);
-  document.body.innerHTML +=`<ul class="nav nav-tabs" id="myTab" role="tablist">
+  document.getElementById("esemenyek").remove();
+  document.getElementById("oldalvalto").remove();
+  document.getElementById("fooldalszuresnav").remove();
+
+  document.body.innerHTML += `<ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#kiosztva" type="button" role="tab" aria-controls="kiosztva" aria-selected="true">Kiosztva</button>
+          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#kiosztva" type="button" role="tab" aria-controls="kiosztva" aria-selected="true">Kiosztva</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#hianyzik" type="button" role="tab" aria-controls="hianyzik" aria-selected="false">Hiányzik</button>
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#hianyzik" type="button" role="tab" aria-controls="hianyzik" aria-selected="false">Hiányzik</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#kesz" type="button" role="tab" aria-controls="kesz" aria-selected="false">Kész</button>
+          <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#kesz" type="button" role="tab" aria-controls="kesz" aria-selected="false">Kész</button>
       </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
+  </ul>
+  <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab" tabindex="0" id="kiosztva"></div>
-      <div class="tab-pane fade" id="hianyzik" role="tabpanel" aria-labelledby="profile-tab" tabindex="1" id="hianyzik"></div>
-      <div class="tab-pane fade" id="kesz" role="tabpanel" aria-labelledby="contact-tab" tabindex="2" id="kesz"></div>
-      </div>`;
-      let sql = `Select * from feladatsor f where f.osztaly = '${sessionStorage.osztalya}'`;
-      console.log(sql);
-        console.log(teendok);
-        let kartyakHTML = "";
-        teendok.forEach(x => {
-          let now = new Date();
-          let formattedNow = now.toLocaleDateString("hu-HU");
-          console.log(formattedNow +"ma");
-          let formattedDate = new Date(x.hatarido).toLocaleDateString("hu-HU");
-          console.log(formattedDate + "hatarido")
-          kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
-          var formattedNowSplit = formattedNow.split('.');
-          var formattedDateSplit = formattedDate.split('.');
-          
+      <div class="tab-pane fade" id="hianyzik" role="tabpanel" aria-labelledby="profile-tab" tabindex="1"></div>
+      <div class="tab-pane fade" id="kesz" role="tabpanel" aria-labelledby="contact-tab" tabindex="2"></div>
+  </div>`;
+
+  let promiseTomb = [];
+
+  teendok.forEach(x => {
+      let now = new Date();
+      let formattedNow = formatDate(now);
+      let formattedDate = formatDate(new Date(x.hatarido));
+      let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
+      let formattedNowSplit = formattedNow.split('.');
+      let formattedDateSplit = formattedDate.split('.');
+      let sql2 = `Select Count(ffk.feladatsorId) as db from feladatsor f,feladatesfelhasznalokapcs ffk where ${x.id}=ffk.feladatsorId and ${sessionStorage.fnid} = felhasznaloId`;
+      let promise = LekerdezesEredmenye(sql2).then((feladat) => {
           let jo = 0;
-          
-          for (let i = 0; i < formattedNowSplit.length; i++) {
-              if (parseInt(formattedDateSplit[i]) > parseInt(formattedNowSplit[i])) {
-                  jo = 0;
-                  break;
-              } else if (parseInt(formattedDateSplit[i]) < parseInt(formattedNowSplit[i])) {
-                  jo = 1;
-                  break;
+          if (feladat[0].db == 0) {
+              for (let i = 0; i < formattedNowSplit.length; i++) {
+                  if (parseInt(formattedDateSplit[i]) > parseInt(formattedNowSplit[i])) {
+                      jo = 0;
+                      break;
+                  } else if (parseInt(formattedDateSplit[i]) < parseInt(formattedNowSplit[i])) {
+                      jo = 1;
+                      break;
+                  }
               }
+          } else {
+              jo = 2;
           }
-          
+          return jo;
+      });
+      promiseTomb.push(promise);
+  });
+
+  Promise.all(promiseTomb).then(joTomb => {
+      joTomb.forEach((jo, index) => {
+          let formattedDate = formatDate(new Date(teendok[index].hatarido));
+          let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${teendok[index].id})"><p>${formattedDate} - ${teendok[index].dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
           if (jo == 0) {
               document.getElementById("kiosztva").innerHTML += kartyakHTML;
           } else if (jo == 1) {
               document.getElementById("hianyzik").innerHTML += kartyakHTML;
+          } else {
+              document.getElementById("kesz").innerHTML += kartyakHTML;
           }
-          
-          
-        });
+      });
+  });
 }
+
+function formatDate(date) {
+  let year = date.getFullYear();
+  let month = (date.getMonth() + 1).toString().padStart(2, '0');
+  let day = date.getDate().toString().padStart(2, '0');
+  return `${year}.${month}.${day}`;
+}
+
+
 var feldatCount = 0;
 var feladatsorId = "";
 function LapMegjelenit(id) {
@@ -612,11 +631,13 @@ GROUP BY
 ORDER BY 
   helyezes;
 `;
-document.getElementById("jobb").remove();
-document.getElementById("esemenyek").remove();
-document.getElementById("oldalvalto").remove();
-document.getElementById("fooldalszuresnav").remove();
-console.log(sql);
+
+  document.getElementById("jobb").remove();
+  document.getElementById("esemenyek").remove();
+  document.getElementById("oldalvalto").remove();
+  document.getElementById("fooldalszuresnav").remove();
+  console.log(sql);
+
 LekerdezesEredmenye(sql).then((x) => {
   console.log(x.find(y => y.felhasznalo_id == sessionStorage.fnid).helyezes);
    helyezese = x.find(y => y.felhasznalo_id == sessionStorage.fnid).helyezes;
