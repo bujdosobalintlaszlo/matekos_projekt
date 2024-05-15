@@ -16,5 +16,5 @@ INSERT INTO osztalyok (osztaly) VALUES
 ('12A'),
 ('12B'),
 ('12C'),
-('12K')
+('12K'),
 ('13');
