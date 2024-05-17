@@ -1,4 +1,4 @@
-
+var valasztotthossz = 20;
 function FooldalgenReg(nev, email) {
   document.body.innerHTML += "";
   document.body.innerHTML = `  <nav class="navbar navbar-expand-lg" id="nav">
@@ -50,19 +50,19 @@ function FooldalgenReg(nev, email) {
     <div id ="esemenyek">
     <div class="row esemenyekrow">
     <div class="card esemenykartya col-12">
-  <img src="./MathJax.png" class="kepkartya" alt="...">
+  <img src="./MathJax.jpg" class="kepkartya" alt="...">
   <div class="card-body">
     <p class="card-text">Tanulja meg használni a MathJax-et!</p>
   </div>
 </div>
 <div class="card esemenykartya col-12">
-  <img src="./matek.jpg" class="kepkartya" alt="...">
+  <img src="./1920_matekverseny.jpg" class="kepkartya" alt="...">
   <div class="card-body">
     <p class="card-text">Heti verseny!</p>
   </div>
 </div>
 <div class="card esemenykartya col-12">
-  <img src="..." class="kepkartya" alt="...">
+  <img src="./kepernyokep-2023-09-03-102949-e1693730232488.jpg" class="kepkartya" alt="...">
   <div class="card-body">
     <p class="card-text">Hasznos tananyagok!</p>
   </div>
@@ -148,14 +148,15 @@ function FooldalgenReg(nev, email) {
 </div>
 <nav aria-label="Page navigation example" id="oldalvalto">
   <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
     <li class="page-item">
-      <a class="page-link" href="#">Next</a>
+      <a class="page-link" id="elozo" onclick="Elozo()">Previous</a>
+    </li>
+    <li class="page-item" onclick="SzamClick(this.querySelector('a').id)"><a class="page-link" id="elso">1</a></li>
+
+    <li class="page-item" onclick="SzamClick(this.querySelector('a').id)"><a class="page-link" id="masodik">2</a></li>
+    <li class="page-item" onclick="SzamClick(this.querySelector('a').id)" ><a class="page-link" id="harmadik">3</a></li>
+    <li class="page-item">
+      <a class="page-link" id="kovetkezo" onclick="Kovetkezo()">Next</a>
     </li>
   </ul>
 </nav>
@@ -185,11 +186,13 @@ var megoldottFeladatok = [];
 //Adatbázisból lekéri az összes feladatot, ezeket pedig a feladatok tömbben tárolja el.
 function FeladatListaz() {
   console.log(`fnid az ez(${sessionStorage.fnid})`);
-  let sqlFeladatok = `select if(f.id in (select f.id 
-        from feladatok f , felhaszesfeladkapcs ff
-        where f.id=ff.feladatId and ff.felhasznaloid=${sessionStorage.fnid}),"1","0") as megoldott, f.*
-        from feladatok f;`;
+  let sqlFeladatok = `SELECT IF(f.id IN (SELECT f.id 
+    FROM feladatok f, felhaszesfeladkapcs ff
+    WHERE f.id=ff.feladatId AND ff.felhasznaloid=${sessionStorage.fnid}), "1", "0") AS megoldott, f.*
+FROM feladatok f
+LIMIT 15;`;
   console.log(sqlFeladatok);
+  //var i = 0;
   LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
     valasz.forEach((adat) => {
       feladatok.push({
@@ -204,7 +207,8 @@ function FeladatListaz() {
       });
     });
     console.log(feladatok, "feladatok: ");
-    FeladatokFeltolt("jobb");
+      FeladatokFeltolt("jobb");
+    
   });
   eredetiSzurt = feladatok;
 }
@@ -271,7 +275,7 @@ function OsszesMegoldandoFeladat(teendok) {
       let now = new Date();
       let formattedNow = formatDate(now);
       let formattedDate = formatDate(new Date(x.hatarido));
-      let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
+      //let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
       let formattedNowSplit = formattedNow.split('.');
       let formattedDateSplit = formattedDate.split('.');
       let sql2 = `Select Count(ffk.feladatsorId) as db from feladatsor f,feladatesfelhasznalokapcs ffk where ${x.id}=ffk.feladatsorId and ${sessionStorage.fnid} = felhasznaloId`;
@@ -418,6 +422,40 @@ function VisszaLep() {}
 
 function FeladatokFeltolt(divId) {
   var hely = document.getElementById(divId);
+  /*
+  var i = 0;
+  while(i < valasztotthossz)
+  {let div = document.createElement("div");
+  div.id = feladatok[i].id;
+  if (feladatok[i].megoldott == 0) {
+    div.style.opacity = 1;
+  } else {
+    //div.style.opacity = 0.7;
+    div.style.backgroundColor = "rgb(40,40,40,0.5)";
+  }
+  div.classList.add("feladat");
+  div.classList.add("col-12");
+  div.classList.add("row");
+  div.addEventListener("click", FeladatMegjelenit);
+  let szinResult = Szinez(feladatok[i].nehezseg);
+  div.innerHTML = `
+          <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
+              <p>${feladatok[i].id}.</p>
+          </div>
+          <div class="feladatNev col-5">
+              <p>${feladatok[i].nev}</p>
+          </div>
+          <div class="feladatTemakor col-5 d-none d-md-block">
+  <p id="${feladatok[i].id}temakorP"></p>
+</div>
+
+      `;
+  TemakorBeiir(feladatok[i].temakorId, `${feladatok[i].id}temakorP`);
+  hely.appendChild(div);
+  hely.appendChild(document.createElement("br"));
+    i++;
+  }
+  */
   feladatok.forEach((adattag) => {
     let div = document.createElement("div");
     div.id = adattag.id;
@@ -448,6 +486,7 @@ function FeladatokFeltolt(divId) {
     hely.appendChild(div);
     hely.appendChild(document.createElement("br"));
   });
+  
 }
 function TemakorBeiir(id, pId) {
   let sql = `select DISTINCT(t.temakor) as nev from temakor t,feladatok f where f.temakorID = ${id} && t.id =f.temakorID;`;
@@ -680,4 +719,68 @@ function Helyezes(){
 
 function VisszaFooldal(){
   FooldalgenReg(sessionStorage.fn,sessionStorage.email);
+}
+
+var fooldaoldalszam = 1;
+var elozolenyomott = "elso";
+var minleker = 10;
+function SzamClick(id){
+  if(elozolenyomott == "elso" && id == "masodik"){
+    
+    fooldaoldalszam++;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+  if(elozolenyomott == "elso" && id == "harmadik"){
+    fooldaoldalszam +=2;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+  if(elozolenyomott == "masodik" && id == "elso"){
+    fooldaoldalszam--;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+  if(elozolenyomott == "masodik" && id == "harmadik"){
+    fooldaoldalszam++;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+  if(elozolenyomott == "harmadik" && id=="masodik"){
+    fooldaoldalszam--;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+  if(elozolenyomott == "harmadik" && id=="elso"){
+    fooldaoldalszam-=2;
+    elozolenyomott = id;
+    FeladatListaz();
+    console.log("alma1");
+  }
+}
+
+function Elozo(){
+  let elso = document.getElementById("elso");
+  let masodik = document.getElementById("masodik");
+  let harmadik = document.getElementById("harmadik");
+  if(elso.innerHTML !== "1")
+  {
+    elso.innerHTML = `${parseInt(elso.innerHTML) - 3}`;
+    masodik.innerHTML = `${parseInt(masodik.innerHTML) - 3}`;
+    harmadik.innerHTML = `${parseInt(harmadik.innerHTML) - 3}`;
+  }
+}
+
+function Kovetkezo(){
+  let elso = document.getElementById("elso");
+  let masodik = document.getElementById("masodik");
+  let harmadik = document.getElementById("harmadik");
+  elso.innerHTML = `${parseInt(elso.innerHTML) + 3}`;
+  masodik.innerHTML = `${parseInt(masodik.innerHTML) + 3}`;
+  harmadik.innerHTML = `${parseInt(harmadik.innerHTML) + 3}`;
 }
