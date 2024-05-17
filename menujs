@@ -1,6 +1,6 @@
 var valasztotthossz = 20;
 function FooldalgenReg(nev, email) {
-  document.body.innerHTML += "";
+  document.body.innerHTML = "";
   document.body.innerHTML = `  <nav class="navbar navbar-expand-lg" id="nav">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -183,17 +183,25 @@ function FooldalgenReg(nev, email) {
 //Feladatok az adatbázisból
 var feladatok = [];
 var megoldottFeladatok = [];
-//Adatbázisból lekéri az összes feladatot, ezeket pedig a feladatok tömbben tárolja el.
+var limitAlso = 0;
+var limitFelso = 15;
+
+// Function to list tasks from the database
 function FeladatListaz() {
   console.log(`fnid az ez(${sessionStorage.fnid})`);
-  let sqlFeladatok = `SELECT IF(f.id IN (SELECT f.id 
-    FROM feladatok f, felhaszesfeladkapcs ff
-    WHERE f.id=ff.feladatId AND ff.felhasznaloid=${sessionStorage.fnid}), "1", "0") AS megoldott, f.*
-FROM feladatok f
-LIMIT 15;`;
+
+  let sqlFeladatok = `SELECT IF(f.id IN (
+      SELECT f.id 
+      FROM feladatok f, felhaszesfeladkapcs ff
+      WHERE f.id = ff.feladatId AND ff.felhasznaloid = ${sessionStorage.fnid}), "1", "0") AS megoldott, f.*
+    FROM feladatok f
+    LIMIT ${limitAlso}, ${limitFelso};`;
+
   console.log(sqlFeladatok);
-  //var i = 0;
+
+  // Query the database and handle the results
   LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
+    feladatok = [];  // Reset the feladatok array
     valasz.forEach((adat) => {
       feladatok.push({
         id: adat.id,
@@ -207,11 +215,12 @@ LIMIT 15;`;
       });
     });
     console.log(feladatok, "feladatok: ");
-      FeladatokFeltolt("jobb");
-    
+    FeladatokFeltolt("jobb");
   });
+
   eredetiSzurt = feladatok;
 }
+
 
 function TeendokBeir() {
   console.log("teendokbeir -------------------------");
@@ -422,47 +431,16 @@ function VisszaLep() {}
 
 function FeladatokFeltolt(divId) {
   var hely = document.getElementById(divId);
-  /*
-  var i = 0;
-  while(i < valasztotthossz)
-  {let div = document.createElement("div");
-  div.id = feladatok[i].id;
-  if (feladatok[i].megoldott == 0) {
-    div.style.opacity = 1;
-  } else {
-    //div.style.opacity = 0.7;
-    div.style.backgroundColor = "rgb(40,40,40,0.5)";
-  }
-  div.classList.add("feladat");
-  div.classList.add("col-12");
-  div.classList.add("row");
-  div.addEventListener("click", FeladatMegjelenit);
-  let szinResult = Szinez(feladatok[i].nehezseg);
-  div.innerHTML = `
-          <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}">
-              <p>${feladatok[i].id}.</p>
-          </div>
-          <div class="feladatNev col-5">
-              <p>${feladatok[i].nev}</p>
-          </div>
-          <div class="feladatTemakor col-5 d-none d-md-block">
-  <p id="${feladatok[i].id}temakorP"></p>
-</div>
 
-      `;
-  TemakorBeiir(feladatok[i].temakorId, `${feladatok[i].id}temakorP`);
-  hely.appendChild(div);
-  hely.appendChild(document.createElement("br"));
-    i++;
-  }
-  */
+  // Kiürítjük a div tartalmát
+  hely.innerHTML = '';
+
   feladatok.forEach((adattag) => {
     let div = document.createElement("div");
     div.id = adattag.id;
     if (adattag.megoldott == 0) {
       div.style.opacity = 1;
     } else {
-      //div.style.opacity = 0.7;
       div.style.backgroundColor = "rgb(40,40,40,0.5)";
     }
     div.classList.add("feladat");
@@ -478,16 +456,14 @@ function FeladatokFeltolt(divId) {
                 <p>${adattag.nev}</p>
             </div>
             <div class="feladatTemakor col-5 d-none d-md-block">
-    <p id="${adattag.id}temakorP"></p>
-</div>
-
+                <p id="${adattag.id}temakorP"></p>
+            </div>
         `;
     TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
     hely.appendChild(div);
-    hely.appendChild(document.createElement("br"));
   });
-  
 }
+
 function TemakorBeiir(id, pId) {
   let sql = `select DISTINCT(t.temakor) as nev from temakor t,feladatok f where f.temakorID = ${id} && t.id =f.temakorID;`;
   LekerdezesEredmenye(sql).then((valasz) => {
@@ -727,36 +703,42 @@ var minleker = 10;
 function SzamClick(id){
   if(elozolenyomott == "elso" && id == "masodik"){
     
+    limitAlso+=15,limitFelso+=15;
     fooldaoldalszam++;
     elozolenyomott = id;
     FeladatListaz();
     console.log("alma1");
   }
   if(elozolenyomott == "elso" && id == "harmadik"){
+    limitAlso+=30,limitFelso+=30;
     fooldaoldalszam +=2;
     elozolenyomott = id;
     FeladatListaz();
     console.log("alma1");
   }
   if(elozolenyomott == "masodik" && id == "elso"){
+    limitAlso-=15,limitFelso-=15;
     fooldaoldalszam--;
     elozolenyomott = id;
     FeladatListaz();
     console.log("alma1");
   }
   if(elozolenyomott == "masodik" && id == "harmadik"){
+    limitAlso+=15,limitFelso+=15;
     fooldaoldalszam++;
     elozolenyomott = id;
     FeladatListaz();
     console.log("alma1");
   }
   if(elozolenyomott == "harmadik" && id=="masodik"){
+    limitAlso-=15,limitFelso-=15;
     fooldaoldalszam--;
     elozolenyomott = id;
     FeladatListaz();
     console.log("alma1");
   }
   if(elozolenyomott == "harmadik" && id=="elso"){
+    limitAlso-=30,limitFelso-=30;
     fooldaoldalszam-=2;
     elozolenyomott = id;
     FeladatListaz();
