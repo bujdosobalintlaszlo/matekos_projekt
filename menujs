@@ -220,38 +220,38 @@ function FeladatListaz() {
   eredetiSzurt = feladatok;
 }
 
-
 function TeendokBeir() {
   console.log("teendokbeir -------------------------");
   let hely = document.getElementById("teendok");
   let sql = `Select * from feladatsor f where f.osztaly = '${sessionStorage.osztalya}'`;
   console.log(sql);
   LekerdezesEredmenye(sql).then((teendok) => {
-    if(teendok.length > 0){
-        TeendokJelez();
+    if (teendok.length > 0) {
+      TeendokJelez();
     }
     console.log(teendok);
     let kartyakHTML = "";
-    for(let i = 0;i<5;++i){
-            let formattedDate = new Date(teendok[i].hatarido).toLocaleDateString("hu-HU");
-            kartyakHTML += `<div class="teendokartya" onclick="LapMegjelenit(${
-              teendok[i].id
-            })"><p>${formattedDate} - ${
-              teendok[i].dolgozatE == 0 ? "feladatlap" : "dolgozat"
-            }</p></div>`;
-          
-          hely.innerHTML = kartyakHTML;
+    for (let i = 0; i < 5; ++i) {
+      let formattedDate = new Date(teendok[i].hatarido).toLocaleDateString(
+        "hu-HU"
+      );
+      kartyakHTML += `<div class="teendokartya" onclick="LapMegjelenit(${
+        teendok[i].id
+      })"><p>${formattedDate} - ${
+        teendok[i].dolgozatE == 0 ? "feladatlap" : "dolgozat"
+      }</p></div>`;
+
+      hely.innerHTML = kartyakHTML;
     }
-    
+
     console.log(teendok);
     let p = document.createElement("p");
-    p.innerHTML="Összes";
-    p.style.textAlign="center";
-    p.style.color="white";
-    p.addEventListener('click', () => OsszesMegoldandoFeladat(teendok));
+    p.innerHTML = "Összes";
+    p.style.textAlign = "center";
+    p.style.color = "white";
+    p.addEventListener("click", () => OsszesMegoldandoFeladat(teendok));
 
     hely.appendChild(p);
-
   });
 }
 function OsszesMegoldandoFeladat(teendok) {
@@ -279,56 +279,63 @@ function OsszesMegoldandoFeladat(teendok) {
 
   let promiseTomb = [];
 
-  teendok.forEach(x => {
-      let now = new Date();
-      let formattedNow = formatDate(now);
-      let formattedDate = formatDate(new Date(x.hatarido));
-      //let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
-      let formattedNowSplit = formattedNow.split('.');
-      let formattedDateSplit = formattedDate.split('.');
-      let sql2 = `Select Count(ffk.feladatsorId) as db from feladatsor f,feladatesfelhasznalokapcs ffk where ${x.id}=ffk.feladatsorId and ${sessionStorage.fnid} = felhasznaloId`;
-      let promise = LekerdezesEredmenye(sql2).then((feladat) => {
-          let jo = 0;
-          if (feladat[0].db == 0) {
-              for (let i = 0; i < formattedNowSplit.length; i++) {
-                  if (parseInt(formattedDateSplit[i]) > parseInt(formattedNowSplit[i])) {
-                      jo = 0;
-                      break;
-                  } else if (parseInt(formattedDateSplit[i]) < parseInt(formattedNowSplit[i])) {
-                      jo = 1;
-                      break;
-                  }
-              }
-          } else {
-              jo = 2;
+  teendok.forEach((x) => {
+    let now = new Date();
+    let formattedNow = formatDate(now);
+    let formattedDate = formatDate(new Date(x.hatarido));
+    //let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${x.id})"><p>${formattedDate} - ${x.dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
+    let formattedNowSplit = formattedNow.split(".");
+    let formattedDateSplit = formattedDate.split(".");
+    let sql2 = `Select Count(ffk.feladatsorId) as db from feladatsor f,feladatesfelhasznalokapcs ffk where ${x.id}=ffk.feladatsorId and ${sessionStorage.fnid} = felhasznaloId`;
+    let promise = LekerdezesEredmenye(sql2).then((feladat) => {
+      let jo = 0;
+      if (feladat[0].db == 0) {
+        for (let i = 0; i < formattedNowSplit.length; i++) {
+          if (
+            parseInt(formattedDateSplit[i]) > parseInt(formattedNowSplit[i])
+          ) {
+            jo = 0;
+            break;
+          } else if (
+            parseInt(formattedDateSplit[i]) < parseInt(formattedNowSplit[i])
+          ) {
+            jo = 1;
+            break;
           }
-          return jo;
-      });
-      promiseTomb.push(promise);
+        }
+      } else {
+        jo = 2;
+      }
+      return jo;
+    });
+    promiseTomb.push(promise);
   });
 
-  Promise.all(promiseTomb).then(joTomb => {
-      joTomb.forEach((jo, index) => {
-          let formattedDate = formatDate(new Date(teendok[index].hatarido));
-          let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${teendok[index].id})"><p>${formattedDate} - ${teendok[index].dolgozatE == 0 ? "feladatlap" : "dolgozat"}</p></div>`;
-          if (jo == 0) {
-              document.getElementById("kiosztva").innerHTML += kartyakHTML;
-          } else if (jo == 1) {
-              document.getElementById("hianyzik").innerHTML += kartyakHTML;
-          } else {
-              document.getElementById("kesz").innerHTML += kartyakHTML;
-          }
-      });
+  Promise.all(promiseTomb).then((joTomb) => {
+    joTomb.forEach((jo, index) => {
+      let formattedDate = formatDate(new Date(teendok[index].hatarido));
+      let kartyakHTML = `<div class="teendokartya" onclick="LapMegjelenit(${
+        teendok[index].id
+      })"><p>${formattedDate} - ${
+        teendok[index].dolgozatE == 0 ? "feladatlap" : "dolgozat"
+      }</p></div>`;
+      if (jo == 0) {
+        document.getElementById("kiosztva").innerHTML += kartyakHTML;
+      } else if (jo == 1) {
+        document.getElementById("hianyzik").innerHTML += kartyakHTML;
+      } else {
+        document.getElementById("kesz").innerHTML += kartyakHTML;
+      }
+    });
   });
 }
 
 function formatDate(date) {
   let year = date.getFullYear();
-  let month = (date.getMonth() + 1).toString().padStart(2, '0');
-  let day = date.getDate().toString().padStart(2, '0');
+  let month = (date.getMonth() + 1).toString().padStart(2, "0");
+  let day = date.getDate().toString().padStart(2, "0");
   return `${year}.${month}.${day}`;
 }
-
 
 var feldatCount = 0;
 var feladatsorId = "";
@@ -432,7 +439,7 @@ function FeladatokFeltolt(divId) {
   var hely = document.getElementById(divId);
 
   // Kiürítjük a div tartalmát
-  hely.innerHTML = '';
+  hely.innerHTML = "";
 
   feladatok.forEach((adattag) => {
     let div = document.createElement("div");
@@ -625,13 +632,13 @@ function EredmenyMent(megoldIdo, pontszam, szazalek) {
   });
 }
 
-function TeendokJelez(){
-    document.getElementById("bell").style.fill="green";
+function TeendokJelez() {
+  document.getElementById("bell").style.fill = "green";
 }
 
-function ProfilModosit(){
+function ProfilModosit() {
   var helyezese = -1;
-  let sql=`SELECT 
+  let sql = `SELECT 
   f.id AS felhasznalo_id,
   f.FelhasznaloNev AS felhasznalo_nev,
   COUNT(ff.feladatId) AS megoldott_feladatok_szama,
@@ -652,19 +659,21 @@ ORDER BY
   document.getElementById("fooldalszuresnav").remove();
   console.log(sql);
 
-LekerdezesEredmenye(sql).then((x) => {
-  console.log(x.find(y => y.felhasznalo_id == sessionStorage.fnid).helyezes);
-   helyezese = x.find(y => y.felhasznalo_id == sessionStorage.fnid).helyezes;
+  LekerdezesEredmenye(sql).then((x) => {
+    console.log(
+      x.find((y) => y.felhasznalo_id == sessionStorage.fnid).helyezes
+    );
+    helyezese = x.find((y) => y.felhasznalo_id == sessionStorage.fnid).helyezes;
 
-   var elem = document.createElement("div");
-   elem.id="anyad";
-   elem.innerHTML +=`<div class="row" id="felhasznkartyak">
+    var elem = document.createElement("div");
+    //elem.id="anyad";
+    elem.innerHTML += `<div class="row" id="felhasznkartyak">
    <div class="col-12 col-md-5" id="felhasznaloKartya">
      <h1 id="felhasznalonevkartya">${sessionStorage.fn}</h1>
      <p id="emailkartya">${sessionStorage.email}</p>
      <p id="helyezeskartya">Helyezés: ${helyezese}</p>
      <p id="osztalyakartya">${sessionStorage.osztalya}</p>
-     <input type="button" value="Profil adatainak módosítása" class="btn" id="felhasznaloKartyaGomb">
+     <input type="button" value="Profil adatainak módosítása" class="btn" id="felhasznaloKartyaGomb"  data-bs-toggle="modal" data-bs-target="#profilmodositModal">
    </div>
    <div class="col-12 col-md-5" id="diagram1">
    <canvas id="myChart"></canvas>
@@ -678,18 +687,55 @@ LekerdezesEredmenye(sql).then((x) => {
 
  <input type="button" value="Vissza a főoldara" class="btn btn-dark col-12 col-md-5" onclick="FooldalRegGen(${sessionStorage.fn},${sessionStorage.email})">
  
- </div>`;
-   document.body.appendChild(elem);
-});
+ </div>
+ <div class="modal fade" id="profilmodositModal" tabindex="-1" aria-labelledby="profilmodositModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header" id="profilmodositmodalheader">
+        <h1 class="modal-title fs-5" id="profilmodositModalLabel">Adatok szerkesztése</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="profilmodositmodalbody">
+        <label>Felhasználónév:</label><br>
+        <div class="input-group mb-3">
+  <input id="felhasznnevmodosit" type="text" class="form-control" value="${sessionStorage.fn}" aria-label="Recipient's username" aria-describedby="button-addon2" disabled >
+  <button class="btn btn-outline-secondary" type="button" id="felhasznnevmodositgomb" onclick="FelhasznModosit()">Módosítás</button>
+</div>
+        <br>
+        <label>E-mail:</label><br>
+        <div class="input-group mb-3">
+  <input id="emailcimmodosit" type="text" class="form-control" value="${sessionStorage.email}" aria-label="Recipient's username" aria-describedby="button-addon2"  disabled>
+  <button class="btn btn-outline-secondary" type="button" id="emailcimmodositgomb" onclick="EmailcimModosit()">Módosítás</button>
+</div>
+        <br>
+        <label>Jelszó:</label><br>
+        <div class="input-group mb-3">
+  <input id="jelszomodosit" type="password" class="form-control" placeholder="..." aria-label="Recipient's username" aria-describedby="button-addon2"  disabled>
+  <button class="btn btn-outline-secondary" type="button" id="jelszomodositgomb" onclick="Jelszomodosit()">Módosítás</button>
+</div>  
+<br>
+        <label>Jelszó mégegyszer</label><br>
+        <input class="form-control" id="jelszoism" type="password" placeholder="..." required disabled>
+        <br>
+        <label>Jelszó a jóváhagyáshoz (kötelező!):</label><br>
+        <input class="form-control" id="jelszomegerosit" type="password" placeholder="..." required>
+
+      </div>
+      <div class="modal-footer" id="profilmodositmodalfooter">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="bezargombmodosit">Bezár</button>
+        <button type="button" class="btn btn-primary" id="jovahagygombmodosit" onclick="ModositasokJovahagyasa()">Jóváhagy</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+    document.body.appendChild(elem);
+  });
 }
 
+function Helyezes() {}
 
-function Helyezes(){
-
-}
-
-function VisszaFooldal(){
-  FooldalgenReg(sessionStorage.fn,sessionStorage.email);
+function VisszaFooldal() {
+  FooldalgenReg(sessionStorage.fn, sessionStorage.email);
 }
 
 function SzamClick(id) {
@@ -736,3 +782,99 @@ function Kovetkezo() {
   console.log(fooldaoldalszam);
 }
 
+//-felhasznalonev----
+async function FelhasznModosit() {
+  console.log("felhasznalonev modosit");
+  let nev = document.getElementById("felhasznnevmodosit");
+  nev.disabled = false;
+}
+
+async function EllenorzottNev(nev) {
+  let sql = `SELECT * FROM felhasznalok WHERE felhasznaloNev = "${nev}"`;
+  let valasz = await LekerdezesEredmenye(sql);
+  return valasz.length === 0;
+}
+
+async function ModositNev(nev) {
+  let sql = `UPDATE felhasznalok SET felhasznaloNev = "${nev}" WHERE felhasznalonev = "${sessionStorage.fn}"`;
+  let eredmeny = await LekerdezesEredmenye(sql);
+  console.log(eredmeny);
+}
+//----------------
+
+//-Email-------------------
+async function EmailcimModosit() {
+  let cim = document.getElementById("emailcimmodosit");
+  cim.disabled = false;
+}
+
+async function EllenorzottEmail(cim) {
+  let sql = `SELECT * FROM felhasznalok WHERE email = "${cim}"`;
+  let valasz = await LekerdezesEredmenye(sql);
+  return valasz.length === 0;
+}
+
+async function ModositEmail(cim) {
+  let sql = `UPDATE felhasznalok SET email = "${cim}" WHERE felhasznalonev = "${sessionStorage.fn}"`;
+  let eredmeny = await LekerdezesEredmenye(sql);
+  console.log(eredmeny);
+}
+//-----------------
+
+//-jelszo---------
+async function Jelszomodosit() {
+  let jelsz = document.getElementById("jelszomodosit");
+  let ism = document.getElementById("jelszoism");
+  jelsz.disabled = false;
+  ism.disabled = false;
+}
+
+async function EllenorzottJelszo(jelsz) {
+  return ErosE(jelsz, sessionStorage.fn);
+}
+
+async function ModositJelszo(jelsz) {
+  let hashjelsz = await hash(jelsz);
+  let sql = `UPDATE felhasznalok SET jelszo = "${hashjelsz}" WHERE felhasznalonev = "${sessionStorage.fn}"`;
+  let eredmeny = await LekerdezesEredmenye(sql);
+  console.log(eredmeny);
+}
+//-----------------
+
+async function ModositasokJovahagyasa() {
+  let nev = document.getElementById("felhasznnevmodosit");
+  let cim = document.getElementById("emailcimmodosit");
+  let jelsz = document.getElementById("jelszomodosit");
+  let ism = document.getElementById("jelszoism");
+
+  if (!nev.disabled) {
+    if (await EllenorzottNev(nev.value)) {
+      await ModositNev(nev.value);
+      sessionStorage.fn = nev.value;
+    } else {
+      alert("Ez a név már foglalt!");
+    }
+  }
+
+  if (!cim.disabled) {
+    if (await EllenorzottEmail(cim.value)) {
+      await ModositEmail(cim.value);
+      sessionStorage.email=cim.value;
+    } else {
+      alert("Foglalt E-mail!");
+    }
+  }
+
+  if (!jelsz.disabled) {
+    if (jelsz.value === ism.value) {
+      if (await EllenorzottJelszo(jelsz.value)) {
+        await ModositJelszo(jelsz.value);
+      } else {
+        alert("Ez a név már foglalt!");
+      }
+    } else {
+      jelsz.value = "Hiba!";
+      ism.value = "Hiba!";
+    }
+  }
+}
