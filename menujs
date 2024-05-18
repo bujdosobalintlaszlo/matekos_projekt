@@ -800,7 +800,6 @@ async function ModositNev(nev) {
   let eredmeny = await LekerdezesEredmenye(sql);
   console.log(eredmeny);
 }
-//----------------
 
 //-Email-------------------
 async function EmailcimModosit() {
@@ -819,7 +818,6 @@ async function ModositEmail(cim) {
   let eredmeny = await LekerdezesEredmenye(sql);
   console.log(eredmeny);
 }
-//-----------------
 
 //-jelszo---------
 async function Jelszomodosit() {
@@ -839,42 +837,71 @@ async function ModositJelszo(jelsz) {
   let eredmeny = await LekerdezesEredmenye(sql);
   console.log(eredmeny);
 }
+
 //-----------------
 
 async function ModositasokJovahagyasa() {
-  let nev = document.getElementById("felhasznnevmodosit");
-  let cim = document.getElementById("emailcimmodosit");
-  let jelsz = document.getElementById("jelszomodosit");
-  let ism = document.getElementById("jelszoism");
+  if(await ModositEllenorzes()) {
+    let nev = document.getElementById("felhasznnevmodosit");
+    let cim = document.getElementById("emailcimmodosit");
+    let jelsz = document.getElementById("jelszomodosit");
+    let ism = document.getElementById("jelszoism");
 
-  if (!nev.disabled) {
-    if (await EllenorzottNev(nev.value)) {
-      await ModositNev(nev.value);
-      sessionStorage.fn = nev.value;
-    } else {
-      alert("Ez a név már foglalt!");
-    }
-  }
-
-  if (!cim.disabled) {
-    if (await EllenorzottEmail(cim.value)) {
-      await ModositEmail(cim.value);
-      sessionStorage.email=cim.value;
-    } else {
-      alert("Foglalt E-mail!");
-    }
-  }
-
-  if (!jelsz.disabled) {
-    if (jelsz.value === ism.value) {
-      if (await EllenorzottJelszo(jelsz.value)) {
-        await ModositJelszo(jelsz.value);
+    if (!nev.disabled) {
+      if (await EllenorzottNev(nev.value)) {
+        await ModositNev(nev.value);
+        sessionStorage.fn = nev.value;
       } else {
         alert("Ez a név már foglalt!");
       }
-    } else {
-      jelsz.value = "Hiba!";
-      ism.value = "Hiba!";
     }
+
+    if (!cim.disabled) {
+      if (await EllenorzottEmail(cim.value)) {
+        await ModositEmail(cim.value);
+        sessionStorage.email = cim.value;
+      } else {
+        alert("Foglalt E-mail!");
+      }
+    }
+
+    if (!jelsz.disabled) {
+      if (jelsz.value === ism.value) {
+        if (await EllenorzottJelszo(jelsz.value)) {
+          await ModositJelszo(jelsz.value);
+        } else {
+          alert("Hibás jelszó!");
+        }
+      } else {
+        jelsz.value = "Hiba!";
+        ism.value = "Hiba!";
+      }
+    }
+  } else {
+    alert("Jelszóellenőrzés sikertelen!");
+  }
+}
+
+async function ModositEllenorzes() {
+  let jelszoleker = `SELECT f.jelszo FROM felhasznalok f WHERE f.felhasznaloNev = "${sessionStorage.fn}"`;
+  let kapottjelsz = await hash(document.getElementById("jelszomegerosit").value);
+  console.log("Hash-elt jelszó:", kapottjelsz);
+
+  let eredmeny = await LekerdezesEredmenye(jelszoleker);
+  console.log("Lekérdezés eredménye:", eredmeny);
+
+  if (eredmeny.length > 0) {
+    let adatbazisJelszo = eredmeny[0].jelszo;
+    console.log("Adatbázisban tárolt jelszó:", adatbazisJelszo);
+    if (kapottjelsz === adatbazisJelszo) {
+      console.log("A jelszavak egyeznek.");
+      return true;
+    } else {
+      console.log("A jelszavak nem egyeznek.");
+      return false;
+    }
+  } else {
+    console.log("Nincs ilyen felhasználó.");
+    return false;
   }
 }
