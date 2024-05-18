@@ -186,7 +186,6 @@ var megoldottFeladatok = [];
 var limitAlso = 0;
 var limitFelso = 15;
 
-// Function to list tasks from the database
 function FeladatListaz() {
   console.log(`fnid az ez(${sessionStorage.fnid})`);
 
@@ -198,10 +197,8 @@ function FeladatListaz() {
     LIMIT ${limitAlso}, ${limitFelso};`;
 
   console.log(sqlFeladatok);
-
-  // Query the database and handle the results
   LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
-    feladatok = [];  // Reset the feladatok array
+    feladatok = [];
     valasz.forEach((adat) => {
       feladatok.push({
         id: adat.id,
@@ -682,11 +679,7 @@ LekerdezesEredmenye(sql).then((x) => {
  </div>`;
    document.body.appendChild(elem);
 });
-  
-
-
 }
-
 
 
 function Helyezes(){
@@ -744,25 +737,34 @@ function SzamClick(id){
     FeladatListaz();
     console.log("alma1");
   }
+ 
 }
 
-function Elozo(){
+function Elozo() {
   let elso = document.getElementById("elso");
   let masodik = document.getElementById("masodik");
   let harmadik = document.getElementById("harmadik");
-  if(elso.innerHTML !== "1")
-  {
+  if (parseInt(elso.innerHTML) > 1) {
     elso.innerHTML = `${parseInt(elso.innerHTML) - 3}`;
     masodik.innerHTML = `${parseInt(masodik.innerHTML) - 3}`;
     harmadik.innerHTML = `${parseInt(harmadik.innerHTML) - 3}`;
+    limitAlso -= 45;
+    limitFelso -= 45;
+    fooldaoldalszam -= 3;
+    FeladatListaz();
   }
 }
 
-function Kovetkezo(){
+function Kovetkezo() {
   let elso = document.getElementById("elso");
   let masodik = document.getElementById("masodik");
   let harmadik = document.getElementById("harmadik");
   elso.innerHTML = `${parseInt(elso.innerHTML) + 3}`;
   masodik.innerHTML = `${parseInt(masodik.innerHTML) + 3}`;
   harmadik.innerHTML = `${parseInt(harmadik.innerHTML) + 3}`;
+  limitAlso += 45;
+  limitFelso += 45;
+  fooldaoldalszam += 3;
+  FeladatListaz();
 }
+
