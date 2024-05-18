@@ -185,6 +185,8 @@ var feladatok = [];
 var megoldottFeladatok = [];
 var limitAlso = 0;
 var limitFelso = 15;
+var fooldaoldalszam = 1;
+var elozolenyomott = "elso";
 
 function FeladatListaz() {
   console.log(`fnid az ez(${sessionStorage.fnid})`);
@@ -690,54 +692,18 @@ function VisszaFooldal(){
   FooldalgenReg(sessionStorage.fn,sessionStorage.email);
 }
 
-var fooldaoldalszam = 1;
-var elozolenyomott = "elso";
-var minleker = 10;
-function SzamClick(id){
-  if(elozolenyomott == "elso" && id == "masodik"){
-    
-    limitAlso+=15,limitFelso+=15;
-    fooldaoldalszam++;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
+function SzamClick(id) {
+  if (id == "elso") {
+    fooldaoldalszam = parseInt(document.getElementById("elso").innerHTML);
+  } else if (id == "masodik") {
+    fooldaoldalszam = parseInt(document.getElementById("masodik").innerHTML);
+  } else if (id == "harmadik") {
+    fooldaoldalszam = parseInt(document.getElementById("harmadik").innerHTML);
   }
-  if(elozolenyomott == "elso" && id == "harmadik"){
-    limitAlso+=30,limitFelso+=30;
-    fooldaoldalszam +=2;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
-  }
-  if(elozolenyomott == "masodik" && id == "elso"){
-    limitAlso-=15,limitFelso-=15;
-    fooldaoldalszam--;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
-  }
-  if(elozolenyomott == "masodik" && id == "harmadik"){
-    limitAlso+=15,limitFelso+=15;
-    fooldaoldalszam++;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
-  }
-  if(elozolenyomott == "harmadik" && id=="masodik"){
-    limitAlso-=15,limitFelso-=15;
-    fooldaoldalszam--;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
-  }
-  if(elozolenyomott == "harmadik" && id=="elso"){
-    limitAlso-=30,limitFelso-=30;
-    fooldaoldalszam-=2;
-    elozolenyomott = id;
-    FeladatListaz();
-    console.log("alma1");
-  }
- 
+  limitAlso = (fooldaoldalszam - 1) * 15;
+  limitFelso = 15;
+  elozolenyomott = id;
+  FeladatListaz();
 }
 
 function Elozo() {
@@ -748,10 +714,11 @@ function Elozo() {
     elso.innerHTML = `${parseInt(elso.innerHTML) - 3}`;
     masodik.innerHTML = `${parseInt(masodik.innerHTML) - 3}`;
     harmadik.innerHTML = `${parseInt(harmadik.innerHTML) - 3}`;
-    limitAlso -= 45;
-    limitFelso -= 45;
-    fooldaoldalszam -= 3;
+    fooldaoldalszam = parseInt(elso.innerHTML);
+    limitAlso = (fooldaoldalszam - 1) * 15;
+    limitFelso = 15;
     FeladatListaz();
+    console.log(fooldaoldalszam);
   }
 }
 
@@ -762,9 +729,10 @@ function Kovetkezo() {
   elso.innerHTML = `${parseInt(elso.innerHTML) + 3}`;
   masodik.innerHTML = `${parseInt(masodik.innerHTML) + 3}`;
   harmadik.innerHTML = `${parseInt(harmadik.innerHTML) + 3}`;
-  limitAlso += 45;
-  limitFelso += 45;
-  fooldaoldalszam += 3;
+  fooldaoldalszam = parseInt(elso.innerHTML);
+  limitAlso = (fooldaoldalszam - 1) * 15;
+  limitFelso = 15;
   FeladatListaz();
+  console.log(fooldaoldalszam);
 }
 
