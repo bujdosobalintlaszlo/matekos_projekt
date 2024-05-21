@@ -1,0 +1,11 @@
+async function FooldalgenReg(nev, email) {
+    const resp = await fetch('./htmlelemek/fooldal.html');
+    const template = await resp.text();
+    const container = document.getElementById('your-container-id');
+    container.innerHTML = template;
+    KategoriakGen();
+    TeendokBeir();
+    await LekerdezesEredmenye(sql);
+    FeladatListaz();
+    document.getElementById("fnhely").innerHTML = nev;
+}
