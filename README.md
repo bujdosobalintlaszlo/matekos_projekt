@@ -10,13 +10,9 @@
 # feladatmegoldasnal menu: vissza, feladatok(oldalt lenyilo scrollozhato menu amiben a temaval azonos feladatok jelennek meg),kijelentkezes
 Szures, ha elsonek a szinteket akarom szurni buggos
 # Most kell:
---> 1. jelszó mégegyszer nincs letiltva *
---> 2. üres oldalszám *
-3. f5 főoldal *
-4. Ha nincs megoldott feladat nincs profil *
---> 5. feladat leadásnál nincs visszajelzés *
---> 6. feladat feltöltésnél nincs visszajelzés *
---> 7. megoldott feladatnál nincs visszajelzés *
---> 8. ranglistánál az oldalszámozás *
-9. scroll bar néha buggos *
-10. nem mindenhol van visszagomb *
+- 1. jelszó mégegyszer nincs letiltva *
+- 2. üres oldalszám *
+- 5. feladat leadásnál nincs visszajelzés * - kész
+- 6. feladat feltöltésnél nincs visszajelzés * - kész
+- 7. megoldott feladatnál nincs visszajelzés *
+- 8. ranglistánál az oldalszámozás *
