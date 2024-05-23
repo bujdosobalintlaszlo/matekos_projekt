@@ -10,9 +10,9 @@
 # feladatmegoldasnal menu: vissza, feladatok(oldalt lenyilo scrollozhato menu amiben a temaval azonos feladatok jelennek meg),kijelentkezes
 Szures, ha elsonek a szinteket akarom szurni buggos
 # Most kell:
-- 1. jelszó mégegyszer nincs letiltva *
+- 1. jelszó mégegyszer nincs letiltva * - kész
 - 2. üres oldalszám *
 - 5. feladat leadásnál nincs visszajelzés * - kész
 - 6. feladat feltöltésnél nincs visszajelzés * - kész
-- 7. megoldott feladatnál nincs visszajelzés *
-- 8. ranglistánál az oldalszámozás *
+- 7. megoldott feladatnál nincs visszajelzés * - kész
+- 8. ranglistánál az oldalszámozás * 
