@@ -16,3 +16,4 @@ Szures, ha elsonek a szinteket akarom szurni buggos
 - 6. feladat feltöltésnél nincs visszajelzés * - kész
 - 7. megoldott feladatnál nincs visszajelzés * - kész
 - 8. ranglistánál az oldalszámozás * 
++ (visszagomb van a ranglisatnal mostmar)
