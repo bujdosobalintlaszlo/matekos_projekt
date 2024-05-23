@@ -1,0 +1,29 @@
+
+textarea
+{
+    resize: none;
+    
+}
+
+#megoldas
+{
+    height: 20rem;
+}
+
+#megjelenit
+{
+    background-color:rgb(22, 22, 22);
+}
+#jovahagy{
+    border-radius:10px;
+    background-color: rgba(17, 207, 17, 0.1);
+    color: rgb(9, 165, 9);
+    font-weight: bold;
+    
+}
+
+#beadasgomb{
+    margin: 20px;
+    margin-right: 20px;
+    width: 100%;
+}
