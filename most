@@ -1,0 +1,242 @@
+function Feltoltes()
+{
+  document.body.innerHTML +="";
+document.body.style.overflow = 'auto';
+
+document.body.innerHTML = `
+<nav class="navbar">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1">
+      <button type="button" class="btn btn-light" onclick="FooldalgenReg('${sessionStorage.fn}', '${sessionStorage.email}')">Vissza</button>
+    </span>
+  </div>
+</nav>
+<div id="tartalom">
+  <div class="row row-cols-2">
+    <div class="col-12 col-xl-6">
+      <form id="hozaadasForm">
+        <div class="mb-3">
+          <label for="feladatNevForm" class="form-label">
+            <h3><b>Feladat neve</b></h3>
+          </label>
+          <textarea class="form-control" id="feladatNevForm" rows="1" maxlength="50" onkeyup="BeirCim()"></textarea>
+        </div>
+        <div class="mb-1">
+          <label for="feladatForm" class="form-label"><h3><b>Feladat szövege:</b></h3></label>
+          <textarea class="form-control" id="feladatForm" rows="3" maxlength="500" onkeyup="BeirFeladat()"></textarea>
+        </div>
+        <div class="mb-2">
+          <label for="megoldasForm" class="form-label"><h3><b>Megoldás:</b></h3></label>
+          <textarea class="form-control" id="megoldasForm" rows="1" maxlength="250" onkeyup="BeirMegoldas()"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="aktNehezseg" class="form-label"><h3><b>Nehézségi szint:</b></h3></label>
+          <br>
+          <div class="btn-group col-12">
+          <select class="form-select" aria-label="Nehézség" id="aktNehezseg">
+          <option value="" disabled selected hidden>Nehézség</option>
+          <option value="0" onclick="NehesegAtir('Közép')">Közép</option>
+          <option value="1" onclick="NehesegAtir('Emelt')">Emelt</option>
+          <option value="2" onclick="NehesegAtir('Verseny')">Verseny</option>
+          <option value="3" onclick="NehesegAtir('Jelöletlen')">Jelöletlen</option>
+          </select>
+      
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="feltoltTema" class="form-label"><h3><b>Kategória:</b></h3></label>
+          <div class="dropdown">
+          <select class="form-select" aria-label="Témakör" id="feltoltTema" onchange="selectChange()">
+          </select>
+          <input type="hidden" value="-1" id="feltoltId">
+        </div>
+        
+
+        </div>
+        <div class="mb-3">
+          <label for="pontszamForm" class="form-label"><h3><b>Pontszám:</b></h3></label>
+          <textarea class="form-control" id="pontszamForm" rows="1" maxlength="250" onkeyup="BeirPontszam()"></textarea>
+        </div>
+      </form>
+      <input type="button" value="Jóváhagy" onclick="Jovahagy()" class="btn col-12" id="jovahagy">
+    </div>
+    <div class="col-12 col-xl-6" id="megjelenit">
+      <h3><b>Megjelenés:</b></h3>
+      <h3 id="FeladatNev"></h3>
+      <p id="szint"></p><br>
+      <p id="feladat"></p>
+      <p>Válasz:</p>
+      <input type="text" id="megoldas" disabled class="col-12">
+      <p id="kategoria">Kategória:</p>
+      <p id="pontszam"></p>
+    </div>
+  </div>
+</div>
+`;
+
+
+  
+FeltoltesKateg();
+}
+function FeltoltesKateg() {
+  console.log("almafa");
+  var selectElement = document.getElementById("feltoltTema");
+  selectElement.innerHTML = '';
+  let sql = `select * from temakor`;
+  let id = 1;
+  
+  // Create the initial placeholder option
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = ''; // Set value to empty
+  placeholderOption.text = 'Témakör'; // Set text
+  placeholderOption.disabled = true; // Disable the option
+  placeholderOption.selected = true; // Set it as selected by default
+  selectElement.appendChild(placeholderOption);
+
+  LekerdezesEredmenye(sql).then((valasz) => {
+    console.log(valasz, "korte");
+    valasz.forEach(elem => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.text = elem.temakor;
+      selectElement.appendChild(option);
+      id++;
+    });
+  }); 
+}
+
+
+
+function selectChange() {
+  var selectElement = document.getElementById("feltoltTema");
+  var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+  var selectedText = selectElement.options[selectElement.selectedIndex].text;
+}
+
+function TemakorAtir(temakor,id){
+  var gomb = document.getElementById("kategoria");
+  document.getElementById("feltoltId").value=id;
+  gomb.innerText = ""+temakor;
+}
+function NehesegAtir(szint){
+  var nehezseg = document.getElementById("aktNehezseg").value.split('-')[0];
+  var gomb = document.getElementById("aktNehezseg");
+  gomb.innerText = ""+szint;
+}
+function BeirCim()
+{
+    var nev = document.getElementById("feladatNevForm").value;
+    console.log(nev);
+    document.getElementById("FeladatNev").innerHTML = `${nev}`;
+}
+function BeirKategoria()
+{
+  var kat = document.getElementById("kategoriaForm").value;
+  document.getElementById("kategoria").innerHTML = `Kategória: ${kat}`;
+}
+function BeirFeladat() {
+  var feladatInput = document.getElementById("feladatForm").value;
+  var output = document.getElementById("feladat");
+  output.innerHTML = `<span>${feladatInput}</span>`;
+  typesetOutput(output);
+}
+function typesetOutput(outputElement) {
+  MathJax.texReset();
+  MathJax.typesetClear();
+  MathJax.typesetPromise([outputElement]).catch(function (err) {
+      outputElement.innerHTML = '';
+      outputElement.appendChild(document.createTextNode(err.message));
+      console.error(err);
+  });
+}
+window.MathJax = {
+  loader: {load: ['input/asciimath']},
+  startup: {
+    pageReady: function () {
+        var input = document.getElementById('feladatForm');
+        var output = document.getElementById('feladat');
+        output.innerHTML = input.value.trim();
+        window.typesetInput = function () {
+          output.innerHTML = input.value.trim();
+          MathJax.texReset();
+          MathJax.typesetClear();
+          MathJax.typesetPromise([output]).catch(function (err) {
+            output.innerHTML = '';
+            output.appendChild(document.createTextNode(err.message));
+            console.error(err);
+          });
+        }
+        input.oninput = typesetInput;
+      }
+  },
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    processEscapes: true
+  }
+};
+
+function BeirMegoldas()
+{
+    var nev = document.getElementById("megoldasForm").value;
+    console.log(nev);
+    document.getElementById("megoldas").placeholder = `${nev}`;
+}
+
+function BeirNehezeseg()
+{
+    var nehezseg = document.getElementById("szintForm").value;
+        nehezseg === "0" ? document.getElementById("szint").innerHTML = `Középszint` : (nehezseg === "1" ? document.getElementById("szint").innerHTML = `Emelt szint` :(nehezseg ==="2" ? document.getElementById("szint").innerHTML = `Verseny feladat` : document.getElementById("szint").innerHTML = `-`));
+}
+
+function BeirPontszam()
+{
+    var nev = document.getElementById("pontszamForm").value;
+    console.log(nev);
+    document.getElementById("pontszam").innerHTML = `${nev} pont`;
+}
+
+function VisszaMenu()
+{
+  location.reload();
+}
+
+
+function Jovahagy()
+{
+  var kateg = document.getElementById("feltoltTema").value;
+  console.log(kateg);
+  var nehezseg = document.getElementById("aktNehezseg").value;
+  console.log(nehezseg);
+  var szint;
+  if(nehezseg == "0"){
+    szint = 0;
+  }else if(nehezseg == "1"){
+    szint = 1;
+  }else if(nehezseg == "2"){
+    szint = 2;
+  }else if(nehezseg == "3"){
+    szint = 3;
+  }
+  let sql2 = `select t.id from temakor t where t.temakor = '${kateg}'`;
+  console.log(sql2);
+  let sql =`Insert into feladatok values(null,${kateg},'${document.getElementById("megoldasForm").value}',${szint},${document.getElementById("pontszamForm").value.replace("pont","")},'${document.getElementById("feladatNevForm").value}','${document.getElementById("feladatForm").value}') `;
+  console.log(sql); 
+  LekerdezesEredmenye(sql).then((valasz) =>{
+    console.log(valasz);
+  });
+  alert("siker");
+}
+
+  function showHovered() {
+    document.getElementById('infoSpan').style.display = 'none';
+    document.getElementById('hoveredInfoSpan').style.display = 'inline';
+}
+
+function hideHovered() {
+    document.getElementById('infoSpan').style.display = 'inline';
+    document.getElementById('hoveredInfoSpan').style.display = 'none';
+}
+
+
+
+
