@@ -1,3 +1,42 @@
+async function OldalLetilt(){
+  console.log("Belépett a függvénybe.");
+  let sql = `select count(*) from feladatok f`;
+  try {
+    var valasz = await LekerdezesEredmenye(sql);
+    var szam =  parseInt(valasz[0]["count(*)"]);
+    console.log(valasz);
+
+    var maxLapszam = Math.ceil(szam/15);
+    console.log(szam);
+    console.log(maxLapszam);
+    var elso = document.getElementById("elsoli");
+    var masodik = document.getElementById("masodikli");
+    var harmadik = document.getElementById("harmadikli");
+    var kovetkezo = document.getElementById("kovetkezo");
+
+    if(elso.innerText==maxLapszam){
+      masodik.style.visibility = "hidden";
+      masodik.disabled = true;
+      harmadik.style.visibility = "hidden";
+      harmadik.disabled = true;
+      kovetkezo.style.visibility = "hidden";
+      kovetkezo.disabled = true;
+    }
+    else if(masodik.innerText==maxLapszam){
+      harmadik.style.visibility = "hidden";
+      harmadik.disabled= true;
+      kovetkezo.style.visibility = "hidden";
+      kovetkezo.disabled = true;
+    }
+    else if(harmadik.innerText==maxLapszam){
+      kovetkezo.style.visibility = "hidden";
+      kovetkezo.disabled = true;
+    }
+  } catch (error) {
+    console.error("Hiba történt az SQL lekérdezés során:", error);
+  }
+}
+
 
 function SzamClick(id) {
   if (id == "elso") {
