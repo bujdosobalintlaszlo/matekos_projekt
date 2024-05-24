@@ -1,0 +1,57 @@
+
+function SzamClick(id) {
+  if (id == "elso") {
+    fooldaoldalszam = parseInt(document.getElementById("elso").innerHTML);
+  } else if (id == "masodik") {
+    fooldaoldalszam = parseInt(document.getElementById("masodik").innerHTML);
+  } else if (id == "harmadik") {
+    fooldaoldalszam = parseInt(document.getElementById("harmadik").innerHTML);
+  }
+  limitAlso = (fooldaoldalszam - 1) * 15;
+  limitFelso = 15;
+  elozolenyomott = id;
+  FeladatListaz();
+  OldalLetilt();
+}
+
+function Elozo() {
+  let elso = document.getElementById("elso");
+  let masodik = document.getElementById("masodik");
+  let harmadik = document.getElementById("harmadik");
+  if (parseInt(elso.innerHTML) > 1) {
+    elso.innerHTML = `${parseInt(elso.innerHTML) - 3}`;
+    masodik.innerHTML = `${parseInt(masodik.innerHTML) - 3}`;
+    harmadik.innerHTML = `${parseInt(harmadik.innerHTML) - 3}`;
+    fooldaoldalszam = parseInt(elso.innerHTML);
+    limitAlso = (fooldaoldalszam - 1) * 15;
+    limitFelso = 15;
+    FeladatListaz();
+    console.log(fooldaoldalszam);
+  }
+  let elsoli = document.getElementById("elsoli");
+  let masodikli = document.getElementById("masodikli");
+  let harmadikli = document.getElementById("harmadikli");
+  elsoli.disabled = false;
+  elsoli.style.visibility = "visible";
+  masodikli.disabled = false;
+  masodikli.style.visibility = "visible";
+  harmadikli.disabled = false;
+  harmadikli.style.visibility = "visible";
+  kovetkezo.disabled = false;
+  kovetkezo.style.visibility = "visible";
+}
+
+function Kovetkezo() {
+  OldalLetilt();
+  let elso = document.getElementById("elso");
+  let masodik = document.getElementById("masodik");
+  let harmadik = document.getElementById("harmadik");
+  elso.innerHTML = `${parseInt(elso.innerHTML) + 3}`;
+  masodik.innerHTML = `${parseInt(masodik.innerHTML) + 3}`;
+  harmadik.innerHTML = `${parseInt(harmadik.innerHTML) + 3}`;
+  fooldaoldalszam = parseInt(elso.innerHTML);
+  limitAlso = (fooldaoldalszam - 1) * 15;
+  limitFelso = 15;
+  FeladatListaz();
+  console.log(fooldaoldalszam);
+}
