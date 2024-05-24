@@ -1,8 +1,13 @@
 var limit = 0;
+var jo = false;
 var fooldaoldalszam3 = 1;
+
 function RangLista() {
-  document.body.innerHTML = "";   
-  CreateTable(null, "ranglista");
+ document.body.innerHTML="";
+ var div =  document.createElement("div");
+ div.id="TablaHely";
+ document.body.appendChild(div);
+ CreateTable("TablaHely", "ranglista");
   var hely = document.getElementById("ranglista");
   hely.innerHTML += `
     <thead>
@@ -46,7 +51,8 @@ console.log(sql);
         </tr>`;
     });
   });
-  document.body.innerHTML+=`<nav aria-label="Page navigation example" id="oldalvalto">
+
+    document.body.innerHTML+=`<nav aria-label="Page navigation example" id="oldalvalto">
   <ul class="pagination justify-content-center">
     <li class="page-item">
       <a class="page-link" id="elozo" onclick="Elozo3()">Visszaugrás</a>
@@ -59,17 +65,58 @@ console.log(sql);
       <a class="page-link" id="kovetkezo" onclick="Kovetkezo3()">Előreugrás</a>
     </li>
   </ul>
-</nav>
-<div class="row" style="display:flex; justify-content:center;">
-      <input type="button" value="Vissza a főoldara" class="btn btn-dark col-12 col-md-5" onclick="FooldalgenReg('${sessionStorage.fn}', '${sessionStorage.email}')">
-    </div>`;
+</nav>`;
 }
-
+function RanglistaMutat(){
+  var hely = document.getElementById("ranglista");
+  hely.innerHTML = `
+    <thead>
+      <tr>
+        <th>Helyezés</th>
+        <th>Felhasználónév</th>
+        <th>Megoldott feladatok</th>
+      </tr>
+    </thead>
+    <tbody id="ranglista-tbody"></tbody>`;
+  
+  let sql = `SELECT f.id AS felhasznalo_id, f.FelhasznaloNev AS felhasznalo_nev,COALESCE(COUNT(ff.feladatId), 0) AS megoldott_feladatok_szama,COALESCE(MIN(ff.megoldIdo), '9999-12-31') AS legkorabbi_megoldIdo,
+    RANK() OVER (ORDER BY 
+        COALESCE(COUNT(ff.feladatId), 0) DESC, 
+        COALESCE(MIN(ff.megoldIdo), '9999-12-31') ASC
+    ) AS helyezes,
+    CASE 
+      WHEN COUNT(ff.feladatId) = 0 THEN 'nincs megoldott feladat'
+      ELSE 'van megoldott feladat'
+    END AS felhasznalo_tipus
+  FROM 
+    felhasznalok f
+  LEFT JOIN 
+    felhaszesfeladkapcs ff ON f.id = ff.felhasznaloId 
+  GROUP BY 
+    f.id, f.FelhasznaloNev
+  ORDER BY 
+    helyezes
+    LIMIT 15 OFFSET ${limit};
+  `;
+console.log(sql);
+  LekerdezesEredmenye(sql).then((x) => {
+    let tbody = document.getElementById("ranglista-tbody");
+    x.forEach(element => {
+      console.log(element.felhasznalo_id);
+      tbody.innerHTML += `
+        <tr>
+        <td style="${element.felhasznalo_id == sessionStorage.fnid ? 'background-color: green;' : ''}">${element.helyezes}</td>
+          <td>${element.felhasznalo_nev}</td>
+          <td>${element.megoldott_feladatok_szama}</td>
+        </tr>`;
+    });
+  });
+}
 function CreateTable(hely, id) {
   if (hely == null) {
-    document.body.innerHTML = `<table class="table table-dark table-striped" id='${id}'></table>`;
+    document.body.innerHTML = `<div id="tablaHely"><table class="table table-dark table-striped" id='${id}'></table></div>`;
   } else {
-    hely.innerHTML += `<table class="table table-dark table-striped" id='${id}'></table>`;
+    document.getElementById("TablaHely").innerHTML += `<table class="table table-dark table-striped" id='${id}'></table>`;
   }
 }
 
@@ -83,7 +130,8 @@ function SzamClick3(id) {
     fooldaoldalszam3 = parseInt(document.getElementById("harmadik").innerHTML);
   }
   limit = (fooldaoldalszam3 - 1) * 15;
-  RangLista();
+  //document.getElementById("TablaHely").innerHTML =""; 
+  RanglistaMutat();
 }
 
 function Elozo3() {
@@ -96,7 +144,8 @@ function Elozo3() {
     harmadik.innerHTML = `${parseInt(harmadik.innerHTML) - 3}`;
     limit = (parseInt(elso.innerHTML) - 1) * 15;
     fooldaoldalszam3 = parseInt(elso.innerHTML);
-    RangLista();
+   //document.getElementById("TablaHely").innerHTML =""; 
+   RanglistaMutat();
   }
 }
 
@@ -109,5 +158,6 @@ function Kovetkezo3() {
   harmadik.innerHTML = `${parseInt(harmadik.innerHTML) + 3}`;
   limit = (parseInt(elso.innerHTML) - 1) * 15;
   fooldaoldalszam3 = parseInt(elso.innerHTML);
-  RangLista();
+ // document.getElementById("TablaHely").innerHTML =""; 
+  RanglistaMutat();
 }
