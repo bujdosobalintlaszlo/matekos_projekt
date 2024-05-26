@@ -1,0 +1,608 @@
+window.MathJax = {
+    loader: { load: ['input/asciimath'] },
+    startup: {
+        pageReady: function () {
+            var input = document.getElementById('feladatForm');
+            var output = document.getElementById('feladat');
+            output.innerHTML = input.value.trim();
+            window.typesetInput = function () {
+                output.innerHTML = input.value.trim();
+                MathJax.texReset();
+                MathJax.typesetClear();
+                MathJax.typesetPromise([output]).catch(function (err) {
+                    output.innerHTML = '';
+                    output.appendChild(document.createTextNode(err.message));
+                    console.error(err);
+                });
+            }
+            input.oninput = typesetInput;
+        }
+    },
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true
+    }
+};
+
+var belegenned = false;
+var jelenlegi;
+var dolgozatIdTomb = [];
+var kell = [];
+var osztalyok = [];
+var idokorlat = "";
+var dolgozate = false;
+function DolgozatokGen() {
+    document.body.style.overflow="hidden";
+    document.body.style.overflowX = "hidden";
+    document.body.style.overflowY = "auto"; 
+    document.body.style.paddingRight="0px";
+    document.title="Dologozat összeállítása"
+    document.body.style.overflow = 'auto';
+    document.body.innerHTML = "";
+    document.body.innerHTML = `
+    <nav class="navbar navbar-expand-lg" id="nav">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <span>
+                    <form class="d-flex col-12" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Keresés" aria-label="Search" id="kerszo" onkeyup="Talal()">
+                    </form>
+                </span>
+                <span>
+                    <input type="button" value="Összes" style="color:white;" class="btn terKoz sotetgomb" id="osszes" onclick="Osszes2()">
+                    <input type="button" value="Középszint" style="color:green;" class="btn sotetgomb terKoz col-sm-12" id="konnyuSzur" onclick="KozepSzur2()">
+                    <input type="button" value="Emeltszint" style="color:orange" class="btn sotetgomb terKoz col-sm-12" id="emeltSzur" onclick="EmeltSzur2()">
+                    <input type="button" value="Verseny feladat" style="color:red" class="btn sotetgomb terKoz col-sm-12" id="versenySzur" onclick="VersenySzur2()">
+                    <input type="button" value="Jelöletlen nehézség" style="color:white" class="btn sotetgomb terKoz col-sm-12" id="jelSzur" onclick="JelSzur2()">
+                </span>
+                <span id="lenyilo">
+                    <li class="nav-item">
+                        <span>
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <button class="btn sotetgomb dropdown-toggle terKoz" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Témák
+                                    </button>
+                                    <ul class="dropdown-menu" id="temakor">
+                                        <!-- Témák listája -->
+                                    </ul>
+                                </div>
+                            </li>
+                        </span>
+                    </li>
+                </span>
+                <span>
+                    <li class="nav-item">
+                        <input type="button" value="Feladatlap feltöltése" class="btn terKoz sotetgomb" onclick="Ment()" disabled id="ment">
+                    </li>
+                </span>
+                <span>
+                    <li class="nav-item">
+                        <input type="button" value="Vissza" class="btn sotetgomb terKoz" onclick="FooldalgenReg('${sessionStorage.fn}', '${sessionStorage.email}')">
+                    </li>
+                </span>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="">
+    <div class="col-12">
+        <div id="kereses">
+        </div>
+        <div id="lepteto">
+        <div>
+        <!-- Keresési eredmények -->
+    </div>
+    <div class="col-12" id="feladatok">
+        <h1 id="cim">A feladatok:</h1>
+        <!-- Feladatok listája -->
+    </div>
+</div>
+`;
+LapozoBeleGen();
+    FeladatokFeltoltDolgozat("kereses");
+    KategoriakGen2();
+    OldalLetilt3();
+}
+async function LapozoBeleGen(){
+    document.getElementById("lepteto").innerHTML+=`<span id="lapozospan">
+    <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a class="page-link" id="elozo" onclick="Elozo2()">Visszaugrás</a>
+    </li>
+    <li class="page-item" onclick="SzamClick2(this.querySelector('a').id)" id="elsoli"><a class="page-link" id="elso">1</a></li>
+
+    <li class="page-item" onclick="SzamClick2(this.querySelector('a').id)" id="masodikli"><a class="page-link" id="masodik">2</a></li>
+    <li class="page-item" onclick="SzamClick2(this.querySelector('a').id)" id="harmadikli"><a class="page-link" id="harmadik">3</a></li>
+    <li class="page-item">
+      <a class="page-link" id="kovetkezo" onclick="Kovetkezo2()">Következő</a>
+    </li>
+  </ul>
+    </span>` ;
+    OldalLetilt3();
+}
+function FeladatokFeltoltDolgozat(divId) {
+    var hely = document.getElementById(divId);
+    feladatok.forEach(adattag => {
+        console.log(adattag.id);
+        let div = document.createElement("div");
+        div.id = adattag.id;
+        div.classList.add("feladat");
+        div.classList.add("col-12");
+        div.style.marginBottom = "20px";
+        let szinResult = Szinez(adattag.nehezseg);
+        div.innerHTML = `
+            <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+                <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+              </svg></p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${adattag.nev}</p>
+            </div>
+        `;
+        //TemakorBeiir(adattag.temakorId, `temakorP${adattag.id}`);
+        hely.appendChild(div);
+    });
+}
+function FeladatokFeltoltDolgozat2(hely, divId) {
+    var hely = document.getElementById(hely);
+    let div = document.createElement("div");
+    div.id = `doga${divId - 1}`;
+    div.classList.add("feladat");
+    div.classList.add("col-12");
+    let szinResult = Szinez(feladatok[divId - 1].nehezseg);
+    div.innerHTML = `
+            <div class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="hozzaad(${divId - 1},'jobbra')">
+                <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+              </svg></p>
+            </div>
+            <div class="feladatNev col-5">
+                <p>${feladatok[divId - 1].nev}</p>
+            </div>
+            <div class="feladatTemakor col-5">
+                <p id="temakorP${divId - 1}"></p>
+            </div>
+        `;
+    //TemakorBeiir(feladatok[divId - 1].temakorId, `temakorP${divId - 1}`);
+    hely.appendChild(div);
+    hely.appendChild(document.createElement("br"));
+}
+//meg tombbe kell menteni mi kerul be
+function Hozzaad(elem, id) {
+    console.log(elem.dataset.adattag);
+    if (elem.dataset.adattag == "jobbra") {
+        kell.push(id);
+        console.log(kell);
+        document.getElementById("feladatok").appendChild(elem.parentElement);
+        //document.getElementById(`svg${id}`).innerHTML = "";
+        elem.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+          <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/></svg>`;
+        elem.dataset.adattag = "balra";
+    }
+    else if (elem.dataset.adattag == "balra") {
+        console.log(szurt);
+        console.log(id);
+        if (szurt.some(item => item.id === id) || szurt.length == 0) {
+            let indexToRemove = kell.indexOf(id);
+            if (indexToRemove !== -1) {
+                kell.splice(indexToRemove, 1);
+                console.log(kell);
+            }
+            elem.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>`;
+            elem.dataset.adattag = "jobbra";
+            
+            document.getElementById("kereses").appendChild(elem.parentElement);
+            console.log("vissza");
+            document.getElementById("lapozospan").remove();
+        }
+    }
+    if (kell.length > 0) {
+        document.getElementById("ment").disabled = false;
+    } else {
+        document.getElementById("ment").disabled = true;
+    }
+}
+function MegjelenitHozzaadottFeladat(arr, hely) {
+
+    document.getElementById(hely).innerHTML = "";
+    for (let index = 0; index < arr.length; index++) {
+        FeladatokFeltoltDolgozat2(hely, arr[index]);
+    }
+}
+
+function KartyaTorol(ind) {
+    if (!dolgozatIdTomb.includes(ind)) {
+        document.getElementById(ind).remove();
+    }
+}
+
+
+function FeladatKartyaGen(divId, hely) {
+    let index = divId - 1;
+    console.log(hely);
+    var hely = document.getElementById(hely);
+    hely.innerHTML = "";
+    var div = document.createElement("div");
+    let szinResult = Szinez(feladatok[index].temakorId);
+    div.innerHTML = `
+        <div class="sorszam col-3" id="${feladatok[index].id}" style="background-color: ${szinResult.color}">
+            <p class=" col-1">${feladatok[index].id}.</p>
+        </div>
+        <div class="col-11 col-sm-7">
+            <p class="feladatNevP">${feladatok[index].nev}</p>
+        </div>
+        <div class="col-sm-4  d-none d-sm-block ">
+            ${SzambolTemakor(index)}
+        </div>`;
+    hely.appendChild(div);
+    //hely.appendChild(document.createElement("br"));
+
+}
+function SzambolTemakor(index) {
+    let sql = `select t.temakor as tema from temakor t where t.id = ${feladatok[index].temakorId}`;
+    LekerdezesEredmenye(sql).then((valasz) => {
+        let p = document.createElement("p");
+        p.classList.add("temakorP");
+        p.innerHTML = valasz[0].tema;
+    });
+}
+function Ment() {
+    document.body.innerHTML = "";
+    document.body.innerHTML = `
+    <form>
+    <div class="mb-3" id="feladatnev">
+      <label for="feladatnevinfo" class="form-label">Addja meg a feladatsor nevét!</label>
+      <input type="text" class="form-control" id="feladatnevinfo" aria-describedby="feladatlpaneve">
+      <div id="feladatlapnevkot" class="form-text">(Kötelező!)</div>
+      <label for="megoldasiidolable" class="form-label">Időkorlát</label>
+      <input type="time" class="form-control" id="megoldasiido" aria-describedby="megoldasiido">
+      <div id="megoldasihatkot" class="form-text">(Nem Kötelező!)</div>
+      <label for="hataridolabel" class="form-label">Határidő</label>
+      <input type="date" class="form-control" id="hatarido" aria-describedby="hatarido">
+      <div id="hataridkot" class="form-text">(Nem Kötelező!)</div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate" onclick="DolgozatE()">
+        <label class="form-check-label" for="flexCheckIndeterminate">
+            Dolgozat?
+        </label>
+        </div>
+      <div class="dropdown">
+    <a id="osztalyok" class="btn btn-secondary dropdown-toggle col-12" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Osztályok
+    </a>
+
+    <ul class="dropdown-menu col-12" id="osztalyokvalaszt">
+        
+    </ul>
+    </div>
+    </div>
+    </form>
+    <div id="feladatsorDisplay">
+    </div>
+    <div id="jovahagydiv">
+    <input id="jovahagy" class="btn btn-secondary dropdown-toggle col-12" type="button" value="Jóváhagy" onclick="Felkuld()">
+    <input id="visszadoga" class="btn btn-secondary dropdown-toggle col-12" type="button" value="Vissza" onclick="VisszaDolgozatOsszeallitashoz()">
+    </div>
+    
+    `;
+
+    FeladatDisplay();
+    OsztalyokBeir();
+}
+var pontok = 0;
+function FeladatDisplay() {
+    var osszeg = 0;
+    var length = kell.length;
+    var hely = document.getElementById("feladatsorDisplay");
+    var promises = [];
+
+    for (var i = 1; i <= length; ++i) {
+        var promise = FeladatInfo(i).then((valasz) => {
+            console.log(parseInt(valasz.pontszam));
+            osszeg += parseInt(valasz.pontszam);
+            console.log(osszeg);
+            hely.innerHTML += `<div id="megjelenfeladat${i}">
+                <p style="margin:20px">Feladat neve: ${valasz.nev}, Kategória: ${valasz.tema}, Pontszám: ${valasz.pontszam} pont.<br><hr></p>
+            </div>`;
+        });
+        promises.push(promise);
+    }
+    Promise.all(promises).then(() => {
+        hely.innerHTML += `<div id ="osszeg"></div>`;
+        pontok = osszeg;
+        AdatokGen(osszeg);
+        console.log(pontok + "- pontok");
+    });
+}
+
+function AdatokGen(osszeg) {
+    var hely = document.getElementById("osszeg");
+    hely.innerHTML += `<p style="padding:20px;">Összes pontszám: ${osszeg}</p>`;
+}
+
+async function FeladatInfo(i) {
+    let sql = `SELECT f.*, t.temakor AS tema 
+               FROM feladatok f 
+               JOIN temakor t ON f.temakorId = t.id 
+               WHERE f.id = ${i}`;
+    console.log(sql);
+    return LekerdezesEredmenye(sql).then((x) => {
+        console.log(x);
+        return x[0];
+    });
+}
+
+function OsztalyokBeir() {
+    let sql = `Select distinct f.osztaly as o from felhasznalok f where f.osztaly != "" and f.osztaly != "nan"`;
+    var hely = document.getElementById("osztalyokvalaszt");
+    LekerdezesEredmenye(sql).then((osztalyok) => {
+        for (let i = 0; i < osztalyok.length; ++i) {
+            hely.innerHTML += `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="osztaly${i}" onclick="OsztalyKezel('${osztalyok[i].o}')">
+            <label class="form-check-label" for="flexCheckIndeterminate">
+              ${osztalyok[i].o}
+            </label>
+          </div>`;
+        }
+    });
+}
+
+
+function OsztalyKezel(osztaly) {
+    const index = osztalyok.indexOf(osztaly);
+    if (index !== -1) {
+        osztalyok.splice(index, 1);
+    } else {
+        osztalyok.push(osztaly);
+    }
+}
+
+
+async function Felkuld() {
+    let nev = document.getElementById("feladatnevinfo").value;
+    let sql = "";
+    let megoldido = document.getElementById("megoldasiido").value;
+    let hatarido = document.getElementById("hatarido").value;
+
+    let isFoglalt = await FeladatlapNevCheck(nev);
+    let utolsoid = `SELECT f.id FROM feladatsor f ORDER BY f.id DESC LIMIT 1;`;
+    let sql2 = "";
+
+    if (!isFoglalt) {
+        sql += (`Insert into feladatsor Values(null,'${megoldido}',${dolgozate == true ? 1 : 0},${sessionStorage.fnid},'${hatarido}','${osztalyok[0]}');`);
+        console.log(sql);
+        LekerdezesEredmenye(sql).then((feladatok) => {
+            console.log(feladatok);
+        }).then(() => {
+            LekerdezesEredmenye(utolsoid).then((x) => {
+                for (let i = 0; i < kell.length; ++i) {
+                    //sql2 += `Insert into feladatesfeladatsorkapcs Values(${kell[i]},${x[0].id},'${nev}');`;
+                    sql2 = `Insert into feladatesfeladatsorkapcs Values(${kell[i]},${x[0].id},'${nev}');`;
+                    LekerdezesEredmenye(sql2).then((y) => {
+                        console.log(y);
+                    });
+                }
+                alert("Sikeres feltöltés");
+            })
+        });
+    } else {
+        alert("A név már foglalt");
+    }
+}
+function MasodikFeltolt(sql2) {
+    LekerdezesEredmenye(sql2).then((y) => {
+        console.log(y);
+    });
+}
+
+async function FeladatlapNevCheck(nev) {
+    let sql = `Select ffk.FeladatNev as fnev from feladatsor f,feladatesfeladatsorkapcs ffk where feladatsor.id = ffk.feladatsorId`;
+    let nevek = await LekerdezesEredmenye(sql);
+    return nevek.includes(nev);
+}
+
+function DolgozatE() {
+    !dolgozate ? dolgozate = true : dolgozate = false;
+    console.log(dolgozate);
+}
+
+async function TemakorSzures2(id) {
+    szurt = [];
+    const length = await TemakorCount();
+    for (let index = 1; index <= length; index++) {
+        if (document.getElementById(`${index}`).checked) {
+            szurt = szurt.concat(feladatok.filter(x => x.temakorId == index));
+        }
+    }
+    if (szurt.length == 0) {
+        szurt = feladatok;
+    }
+    eredetiSzurt = szurt;
+    MegjelenitItems2();
+}
+
+
+
+
+function VisszaDolgozatOsszeallitashoz() {
+    DolgozatokGen();
+}
+
+  function FeladatListaz2() {
+    console.log(`fnid az ez(${sessionStorage.fnid})`);
+  
+    let sqlFeladatok = `SELECT IF(f.id IN (
+        SELECT f.id 
+        FROM feladatok f, felhaszesfeladkapcs ff
+        WHERE f.id = ff.feladatId AND ff.felhasznaloid = ${sessionStorage.fnid}), "1", "0") AS megoldott, f.*
+      FROM feladatok f
+      LIMIT ${limitAlso}, ${limitFelso};`;
+  
+    console.log(sqlFeladatok);
+    LekerdezesEredmenye(sqlFeladatok).then((valasz) => {
+      feladatok = [];
+      valasz.forEach((adat) => {
+        feladatok.push({
+          id: adat.id,
+          temakorId: adat.temakorID,
+          megoldas: adat.megoldas,
+          nehezseg: adat.nehezseg,
+          pontszam: adat.pontszam,
+          nev: adat.nev,
+          feladat: adat.feladat,
+          megoldott: adat.megoldott,
+        });
+      });
+      console.log(feladatok, "feladatok: ");
+      FeladatokFeltolt2("kereses");
+      eredetiSzurt = feladatok;
+    });
+  }
+
+  function FeladatokFeltolt2(divId) {
+    var hely = document.getElementById(divId);
+    hely.innerHTML = "";
+    feladatok.forEach((adattag) => {
+      let div = document.createElement("div");
+      div.id = adattag.id;
+      if (adattag.megoldott == 0) {
+        div.style.opacity = 1;
+      } else {
+        div.style.backgroundColor = "rgb(40,40,40,0.5)";
+      }
+      div.classList.add("feladat");
+      div.classList.add("col-12");
+      div.classList.add("row");
+      let szinResult = Szinez(adattag.nehezseg);
+      div.innerHTML = `
+      <div id="maindiv${adattag.id}" data-adattag="jobbra" class="sorszam col-3 text-center" style="background-color: ${szinResult.color}" onclick="Hozzaad(this,${adattag.id})">
+      <p id="svg${adattag.id}"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+    </svg></p>
+  </div>
+  <div class="feladatNev col-5">
+      <p>${adattag.nev}</p>
+  </div>`;
+      //TemakorBeiir(adattag.temakorId, `${adattag.id}temakorP`);
+      hely.appendChild(div);
+    });
+  }
+
+  async function OldalLetilt3() {
+    let sql = `select count(*) from feladatok f`;
+    try {
+      var valasz = await LekerdezesEredmenye(sql);
+      var szam = parseInt(valasz[0]["count(*)"]);
+  
+      var maxLapszam = Math.ceil(szam / 15);
+      var elso = document.getElementById("elso");
+      var masodik = document.getElementById("masodik");
+      var harmadik = document.getElementById("harmadik");
+      var kovetkezo = document.getElementById("kovetkezo");
+      var elozo = document.getElementById("elozo");
+  
+      if (parseInt(elso.innerText) >= maxLapszam) {
+        masodik.style.visibility = "hidden";
+        masodik.disabled = true;
+        harmadik.style.visibility = "hidden";
+        harmadik.disabled = true;
+        kovetkezo.style.visibility = "hidden";
+        kovetkezo.disabled = true;
+      } else if (parseInt(masodik.innerText) >= maxLapszam) {
+        harmadik.style.visibility = "hidden";
+        harmadik.disabled = true;
+        kovetkezo.style.visibility = "hidden";
+        kovetkezo.disabled = true;
+      } else if (parseInt(harmadik.innerText) >= maxLapszam) {
+        kovetkezo.style.visibility = "hidden";
+        kovetkezo.disabled = true;
+      } else {
+        masodik.style.visibility = "visible";
+        masodik.disabled = false;
+        harmadik.style.visibility = "visible";
+        harmadik.disabled = false;
+        kovetkezo.style.visibility = "visible";
+        kovetkezo.disabled = false;
+      }
+  
+      if (parseInt(elso.innerText) <= 1) {
+        elozo.disabled = true;
+      } else {
+        elozo.disabled = false;
+      }
+    } catch (error) {
+      console.error("Hiba történt az SQL lekérdezés során:", error);
+    }
+  }
+  
+  function SzamClick2(id) {
+    if (id == "elso") {
+      fooldaoldalszam = parseInt(document.getElementById("elso").innerText);
+    } else if (id == "masodik") {
+      fooldaoldalszam = parseInt(document.getElementById("masodik").innerText);
+    } else if (id == "harmadik") {
+      fooldaoldalszam = parseInt(document.getElementById("harmadik").innerText);
+    }
+    limitAlso = (fooldaoldalszam - 1) * 15;
+    limitFelso = 15;
+    elozolenyomott = id;
+    FeladatListaz2();
+    OldalLetilt3();
+  }
+  
+  function Elozo2() {
+    let elso = document.getElementById("elso");
+    let masodik = document.getElementById("masodik");
+    let harmadik = document.getElementById("harmadik");
+    if (parseInt(elso.innerText) > 1) {
+      elso.innerText = `${parseInt(elso.innerText) - 3}`;
+      masodik.innerText = `${parseInt(masodik.innerText) - 3}`;
+      harmadik.innerText = `${parseInt(harmadik.innerText) - 3}`;
+      fooldaoldalszam = parseInt(elso.innerText);
+      limitAlso = (fooldaoldalszam - 1) * 15;
+      limitFelso = 15;
+      FeladatListaz2();
+      OldalLetilt3();
+      console.log(fooldaoldalszam);
+    }
+    let elsoli = document.getElementById("elsoli");
+    let masodikli = document.getElementById("masodikli");
+    let harmadikli = document.getElementById("harmadikli");
+    let kovetkezo = document.getElementById("kovetkezo");
+    elsoli.disabled = false;
+    elsoli.style.visibility = "visible";
+    masodikli.disabled = false;
+    masodikli.style.visibility = "visible";
+    harmadikli.disabled = false;
+    harmadikli.style.visibility = "visible";
+    kovetkezo.disabled = false;
+    kovetkezo.style.visibility = "visible";
+    OldalLetilt3();
+  }
+  
+  function Kovetkezo2() {
+    let elso = document.getElementById("elso");
+    let masodik = document.getElementById("masodik");
+    let harmadik = document.getElementById("harmadik");
+    elso.innerText = `${parseInt(elso.innerText) + 3}`;
+    masodik.innerText = `${parseInt(masodik.innerText) + 3}`;
+    harmadik.innerText = `${parseInt(harmadik.innerText) + 3}`;
+    fooldaoldalszam = parseInt(elso.innerText);
+    limitAlso = (fooldaoldalszam - 1) * 15;
+    limitFelso = 15;
+    FeladatListaz2();
+    OldalLetilt3();
+    console.log(fooldaoldalszam);
+  }
+  
+  
+  
