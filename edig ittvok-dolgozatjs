@@ -103,9 +103,9 @@ function DolgozatokGen() {
     </div>
 </div>
 `;
+FeladatokFeltoltDolgozat("kereses");
+KategoriakGen2();
 LapozoBeleGen();
-    FeladatokFeltoltDolgozat("kereses");
-    KategoriakGen2();
     OldalLetilt3();
 }
 async function LapozoBeleGen(){
@@ -201,7 +201,7 @@ function Hozzaad(elem, id) {
             
             document.getElementById("kereses").appendChild(elem.parentElement);
             console.log("vissza");
-            document.getElementById("lapozospan").remove();
+            document.getElementById("lapozospan");
         }
     }
     if (kell.length > 0) {
