@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Máj 27. 10:21
+-- Létrehozás ideje: 2024. Máj 27. 10:22
 -- Kiszolgáló verziója: 10.4.20-MariaDB
 -- PHP verzió: 8.0.9
 
@@ -20,6 +20,107 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `kozgaz_matek_teszt`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `feladatesfeladatsorkapcs`
+--
+
+CREATE TABLE `feladatesfeladatsorkapcs` (
+  `feladatId` int(11) NOT NULL,
+  `feladatsorId` int(11) NOT NULL,
+  `FeladatNev` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `feladatesfeladatsorkapcs`
+--
+
+INSERT INTO `feladatesfeladatsorkapcs` (`feladatId`, `feladatsorId`, `FeladatNev`) VALUES
+(1, 7, 'IgenJa'),
+(1, 19, 'asdf'),
+(1, 20, 'asdfasdf'),
+(1, 21, 'asdf'),
+(1, 22, 'asdfxcds'),
+(1, 24, 'Teszt43'),
+(1, 26, 'pontosan'),
+(1, 27, 'Dolgozat _ 2'),
+(1, 28, 'Dolgozat _ 22e43e3r'),
+(1, 30, 'üjuigtdr5tfvhg'),
+(1, 31, 'etrtrt'),
+(1, 32, 'jztjtzhzhz'),
+(1, 33, 'sygbzusaczusgdsuifcdsfv'),
+(2, 7, 'IgenJa'),
+(2, 19, 'asdf'),
+(2, 20, 'asdfasdf'),
+(2, 21, 'asdf'),
+(2, 24, 'Teszt43'),
+(2, 26, 'pontosan'),
+(2, 28, 'Dolgozat _ 22e43e3r'),
+(2, 29, 'efefvergrgrfdvregrgr'),
+(2, 30, 'üjuigtdr5tfvhg'),
+(2, 31, 'etrtrt'),
+(2, 32, 'jztjtzhzhz'),
+(2, 33, 'sygbzusaczusgdsuifcdsfv'),
+(3, 7, 'IgenJa'),
+(3, 19, 'asdf'),
+(3, 20, 'asdfasdf'),
+(3, 21, 'asdf'),
+(3, 24, 'Teszt43'),
+(3, 29, 'efefvergrgrfdvregrgr'),
+(3, 30, 'üjuigtdr5tfvhg'),
+(3, 31, 'etrtrt'),
+(3, 32, 'jztjtzhzhz'),
+(3, 33, 'sygbzusaczusgdsuifcdsfv'),
+(4, 7, 'IgenJa'),
+(4, 19, 'asdf'),
+(4, 20, 'asdfasdf'),
+(4, 21, 'asdf'),
+(4, 24, 'Teszt43'),
+(4, 25, '2024.04.29'),
+(4, 26, 'pontosan'),
+(4, 29, 'efefvergrgrfdvregrgr'),
+(4, 30, 'üjuigtdr5tfvhg'),
+(5, 7, 'IgenJa'),
+(5, 19, 'asdf'),
+(5, 20, 'asdfasdf'),
+(5, 21, 'asdf'),
+(5, 24, 'Teszt43'),
+(5, 25, '2024.04.29'),
+(5, 29, 'efefvergrgrfdvregrgr'),
+(6, 7, 'IgenJa'),
+(6, 19, 'asdf'),
+(6, 25, '2024.04.29'),
+(7, 7, 'IgenJa'),
+(7, 25, '2024.04.29'),
+(8, 25, '2024.04.29'),
+(15, 25, '2024.04.29'),
+(19, 25, '2024.04.29'),
+(24, 27, 'Dolgozat _ 2');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `feladatesfelhasznalokapcs`
+--
+
+CREATE TABLE `feladatesfelhasznalokapcs` (
+  `feladatsorId` int(11) NOT NULL,
+  `felhasznaloId` int(11) NOT NULL,
+  `megoldasiIdo` time DEFAULT NULL,
+  `pontszam` int(11) DEFAULT NULL,
+  `szazalek` int(11) DEFAULT NULL,
+  `megoldasdatum` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `feladatesfelhasznalokapcs`
+--
+
+INSERT INTO `feladatesfelhasznalokapcs` (`feladatsorId`, `felhasznaloId`, `megoldasiIdo`, `pontszam`, `szazalek`, `megoldasdatum`) VALUES
+(24, 33, '00:00:00', 0, 0, '2024-05-23 08:58:24'),
+(25, 1, '00:00:05', 5, 6, '2024-05-01 10:18:52');
 
 -- --------------------------------------------------------
 
@@ -94,14 +195,254 @@ INSERT INTO `feladatok` (`id`, `temakorID`, `megoldas`, `nehezseg`, `pontszam`, 
 (62, 6, '2', 0, 1, 'yz', 'yza'),
 (63, 2, '2', 0, 1, 'ab', 'abc');
 
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `feladatsor`
+--
+
+CREATE TABLE `feladatsor` (
+  `id` int(11) NOT NULL,
+  `idoKorlat` time NOT NULL,
+  `dolgozatE` int(11) NOT NULL,
+  `tanarId` int(11) NOT NULL,
+  `hatarido` date DEFAULT NULL,
+  `osztaly` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `feladatsor`
+--
+
+INSERT INTO `feladatsor` (`id`, `idoKorlat`, `dolgozatE`, `tanarId`, `hatarido`, `osztaly`) VALUES
+(2, '02:20:00', 1, 1, '2022-02-02', NULL),
+(3, '10:23:00', 1, 1, '1011-10-10', '12C'),
+(4, '02:20:00', 1, 1, '2020-02-20', '12C'),
+(5, '01:10:00', 1, 1, '1010-10-10', '12C'),
+(6, '03:00:00', 1, 1, '0000-00-00', '12C'),
+(7, '06:37:00', 1, 1, '4343-04-03', '12C'),
+(8, '03:20:00', 1, 1, '2024-05-03', '12C'),
+(9, '03:30:00', 1, 1, '2024-04-30', '12C'),
+(10, '05:32:00', 1, 1, '3223-03-31', '12C'),
+(11, '20:20:00', 1, 1, '2020-02-20', '12C'),
+(12, '20:20:00', 1, 1, '2020-02-20', '12C'),
+(13, '00:23:00', 1, 1, '3232-03-02', '12C'),
+(14, '23:00:00', 1, 1, '0000-00-00', '12C'),
+(15, '07:59:00', 1, 1, '7677-07-06', '12C'),
+(16, '03:32:00', 1, 1, '3232-03-02', '12C'),
+(17, '20:20:00', 1, 1, '0000-00-00', '12C'),
+(18, '20:20:00', 1, 1, '2002-02-20', '12C'),
+(19, '11:11:00', 1, 1, '0000-00-00', '12C'),
+(20, '04:34:00', 1, 1, '0000-00-00', '12C'),
+(21, '23:42:00', 1, 1, '0000-00-00', '12C'),
+(22, '04:23:00', 0, 1, '0000-00-00', '12C'),
+(23, '23:23:00', 0, 1, '1212-12-12', 'undefined'),
+(24, '03:03:00', 1, 1, '3033-03-30', '12C'),
+(25, '10:10:00', 1, 1, '2024-05-10', '12C'),
+(26, '00:01:00', 0, 1, '2024-05-01', '12C'),
+(27, '00:02:00', 1, 1, '2024-05-03', '12C'),
+(28, '02:20:00', 1, 33, '1123-01-01', '9C'),
+(29, '02:02:00', 1, 33, '2000-02-02', 'Osztály választó '),
+(30, '20:20:00', 1, 33, '2222-02-02', 'Osztály választó '),
+(31, '11:11:00', 1, 33, '1111-11-11', 'Osztály választó '),
+(32, '10:10:00', 1, 33, '2010-01-01', 'Osztály választó '),
+(33, '10:10:00', 1, 33, '1111-04-03', '9C');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `felhaszesfeladkapcs`
+--
+
+CREATE TABLE `felhaszesfeladkapcs` (
+  `felhasznaloId` int(11) NOT NULL,
+  `feladatId` int(11) NOT NULL,
+  `megoldIdo` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `felhaszesfeladkapcs`
+--
+
+INSERT INTO `felhaszesfeladkapcs` (`felhasznaloId`, `feladatId`, `megoldIdo`) VALUES
+(1, 2, '2024-03-25 11:33:00'),
+(1, 3, '2024-03-25 11:43:00'),
+(1, 6, '2024-04-05 08:09:00'),
+(1, 19, '2024-04-15 10:24:00'),
+(16, 12, '2024-04-15 10:20:00'),
+(33, 1, '2024-05-23 08:04:00');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `felhasznalok`
+--
+
+CREATE TABLE `felhasznalok` (
+  `id` int(11) NOT NULL,
+  `email` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
+  `jelszo` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
+  `felhasznaloNev` varchar(40) COLLATE utf8_hungarian_ci NOT NULL,
+  `jog` int(11) NOT NULL,
+  `osztaly` varchar(3) COLLATE utf8_hungarian_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `felhasznalok`
+--
+
+INSERT INTO `felhasznalok` (`id`, `email`, `jelszo`, `felhasznaloNev`, `jog`, `osztaly`) VALUES
+(1, 'balint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint89', 1, '12C'),
+(2, 'balint7584@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'admin_1', 0, '12C'),
+(4, 'balint75841@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'admin_11', 0, 'nan'),
+(8, 'flsfejs@gmail.com', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'balin_t18', 0, '12C'),
+(9, 'bali42nt@gmail.com', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'Bal_int1', 0, '12C'),
+(10, '', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'balint', 0, ''),
+(12, 'szab.eman@alma.hu', '5d546560c6bf78fc7df8aa986c11c71cf7f83bcf3058bd9b1e8b1c56d0f5b852', 'almaa', 0, '12C'),
+(13, 'balint1@gmail.com', 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b', 'balintZ', 0, '12C'),
+(14, 'bar487594lint@gmail.com', 'c6b27d53202d02ed1ec21445f40f65c6d40174986ccc140fcdaa69e07e9718de', 'balint8695', 0, '12C'),
+(15, 'hasbula3@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint597834', 0, '11A'),
+(16, 'alma@alma.com', '7eb9425d6911e079bb8571a7705877cbc6c59ee0746c9912577c71a91aec55f6', 'alma2', 0, '12C'),
+(17, 'balinfhkslbghft@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'kapitany7584', 0, '12C'),
+(18, 'gvrsjn@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'heewgofz2', 0, '12A'),
+(19, 'balint753284@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint56566565', 0, '12C'),
+(20, 'ba43432lint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint65', 0, '12B'),
+(21, 'bali78953nt7584@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'gjdklgdn54', 0, '12C'),
+(22, 'bali45nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'TRza1', 0, '12C'),
+(23, 'balahaint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'videoinfo1', 0, '12C'),
+(24, 'bali7843nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'kurvaanyad', 0, '12C'),
+(25, 'b2323alint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'joLesz1', 0, '12C'),
+(26, 'ba3232lint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint6748', 0, '12C'),
+(27, 'bali32nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'miertnemjo1', 0, '12C'),
+(28, 'baewrwlint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'jkjrg5632', 0, '12C'),
+(29, 'b323alint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'ztrui54', 0, '12C'),
+(30, 'balin2w12t7584@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'namivan23', 0, '12C'),
+(31, 'ba343lint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'mostmarJO1', 0, '12C'),
+(32, 'zsofika@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'Zsófika10', 0, '12C'),
+(33, 'moze1s.bence@ckik.hu', 'ec30798e6fac5c0e93fdb109394b20f57c513fcce72136766f9ac95e1a1a1a7c', 'KisHuszar', 1, '12C'),
+(34, 'moz23243e1s.bence@ckik.hu', '73fa91258222403be21ddde87c0a098e9fa882d3b83d23c520fba2ef52d6ec3a', 'K12isB43ela', 0, '12C'),
+(35, 'moze143qs.bence@ckik.hu', '4234d001c3122d591ca1afd9af35a4aa83d2827896e12f174eb9b3be248fa108', 'KisHuszarwef4tr4t', 0, '9A');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `osztalyok`
+--
+
+CREATE TABLE `osztalyok` (
+  `id` int(11) NOT NULL,
+  `osztaly` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- A tábla adatainak kiíratása `osztalyok`
+--
+
+INSERT INTO `osztalyok` (`id`, `osztaly`) VALUES
+(1, '9A'),
+(2, '9B'),
+(3, '9C'),
+(4, '10A'),
+(5, '10B'),
+(6, '10C'),
+(7, '11A'),
+(8, '11B'),
+(9, '11C'),
+(10, '12A'),
+(11, '12B'),
+(12, '12C'),
+(13, '12K'),
+(14, '13');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `temakor`
+--
+
+CREATE TABLE `temakor` (
+  `id` int(11) NOT NULL,
+  `temakor` text COLLATE utf8_hungarian_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `temakor`
+--
+
+INSERT INTO `temakor` (`id`, `temakor`) VALUES
+(1, 'Abszolútérték, gyök'),
+(2, 'Bizonyítások'),
+(3, 'Egyenletek, egyenlőtlenségek, egyenletrendszerek'),
+(4, 'Egyszerűsítések, átalakítások'),
+(5, 'Értelmezési tartomány, értékkészlet'),
+(6, 'Exponenciális és logaritmusos feladatok'),
+(7, 'Függvények, analízis'),
+(8, 'Halmazok'),
+(9, 'Kombinatorika'),
+(10, 'Logika, gráfok'),
+(11, 'Síkgeometria'),
+(12, 'Sorozatok'),
+(13, 'Statisztika'),
+(14, 'Számelmélet'),
+(15, 'Szöveges feladatok'),
+(16, 'Térgeometria'),
+(17, 'Trigonometria'),
+(18, 'Valószínűségszámítás');
+
 --
 -- Indexek a kiírt táblákhoz
 --
 
 --
+-- A tábla indexei `feladatesfeladatsorkapcs`
+--
+ALTER TABLE `feladatesfeladatsorkapcs`
+  ADD PRIMARY KEY (`feladatId`,`feladatsorId`),
+  ADD KEY `feladatsorId` (`feladatsorId`);
+
+--
+-- A tábla indexei `feladatesfelhasznalokapcs`
+--
+ALTER TABLE `feladatesfelhasznalokapcs`
+  ADD PRIMARY KEY (`feladatsorId`,`felhasznaloId`),
+  ADD KEY `felhasznaloId` (`felhasznaloId`);
+
+--
 -- A tábla indexei `feladatok`
 --
 ALTER TABLE `feladatok`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- A tábla indexei `feladatsor`
+--
+ALTER TABLE `feladatsor`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- A tábla indexei `felhaszesfeladkapcs`
+--
+ALTER TABLE `felhaszesfeladkapcs`
+  ADD PRIMARY KEY (`felhasznaloId`,`feladatId`),
+  ADD KEY `feladatId` (`feladatId`);
+
+--
+-- A tábla indexei `felhasznalok`
+--
+ALTER TABLE `felhasznalok`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- A tábla indexei `osztalyok`
+--
+ALTER TABLE `osztalyok`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- A tábla indexei `temakor`
+--
+ALTER TABLE `temakor`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -113,6 +454,55 @@ ALTER TABLE `feladatok`
 --
 ALTER TABLE `feladatok`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
+-- AUTO_INCREMENT a táblához `feladatsor`
+--
+ALTER TABLE `feladatsor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT a táblához `felhasznalok`
+--
+ALTER TABLE `felhasznalok`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT a táblához `osztalyok`
+--
+ALTER TABLE `osztalyok`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT a táblához `temakor`
+--
+ALTER TABLE `temakor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- Megkötések a kiírt táblákhoz
+--
+
+--
+-- Megkötések a táblához `feladatesfeladatsorkapcs`
+--
+ALTER TABLE `feladatesfeladatsorkapcs`
+  ADD CONSTRAINT `feladatesfeladatsorkapcs_ibfk_1` FOREIGN KEY (`feladatId`) REFERENCES `feladatok` (`id`),
+  ADD CONSTRAINT `feladatesfeladatsorkapcs_ibfk_2` FOREIGN KEY (`feladatsorId`) REFERENCES `feladatsor` (`id`);
+
+--
+-- Megkötések a táblához `feladatesfelhasznalokapcs`
+--
+ALTER TABLE `feladatesfelhasznalokapcs`
+  ADD CONSTRAINT `feladatesfelhasznalokapcs_ibfk_1` FOREIGN KEY (`feladatsorId`) REFERENCES `feladatsor` (`id`),
+  ADD CONSTRAINT `feladatesfelhasznalokapcs_ibfk_2` FOREIGN KEY (`felhasznaloId`) REFERENCES `felhasznalok` (`id`);
+
+--
+-- Megkötések a táblához `felhaszesfeladkapcs`
+--
+ALTER TABLE `felhaszesfeladkapcs`
+  ADD CONSTRAINT `felhaszesfeladkapcs_ibfk_1` FOREIGN KEY (`felhasznaloId`) REFERENCES `felhasznalok` (`id`),
+  ADD CONSTRAINT `felhaszesfeladkapcs_ibfk_2` FOREIGN KEY (`feladatId`) REFERENCES `feladatok` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
