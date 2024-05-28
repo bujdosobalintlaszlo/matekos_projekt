@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Máj 28. 15:16
+-- Létrehozás ideje: 2024. Máj 28. 15:22
 -- Kiszolgáló verziója: 10.4.27-MariaDB
 -- PHP verzió: 8.0.25
 
@@ -211,11 +211,6 @@ INSERT INTO `felhasznalok` (`id`, `email`, `jelszo`, `felhasznaloNev`, `jog`, `o
 (4, 'balint75841@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'admin_11', 0, 'nan'),
 (8, 'flsfejs@gmail.com', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'balin_t18', 0, '12C'),
 (9, 'bali42nt@gmail.com', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'Bal_int1', 0, '12C'),
-(10, '', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'balint', 0, ''),
-(12, 'szab.eman@alma.hu', '5d546560c6bf78fc7df8aa986c11c71cf7f83bcf3058bd9b1e8b1c56d0f5b852', 'almaa', 0, '12C'),
-(13, 'balint1@gmail.com', 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b', 'balintZ', 0, '12C'),
-(14, 'bar487594lint@gmail.com', 'c6b27d53202d02ed1ec21445f40f65c6d40174986ccc140fcdaa69e07e9718de', 'balint8695', 0, '12C'),
-(15, 'hasbula3@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint597834', 0, '11A'),
 (16, 'alma@alma.com', '7eb9425d6911e079bb8571a7705877cbc6c59ee0746c9912577c71a91aec55f6', 'alma2', 0, '12C'),
 (17, 'balinfhkslbghft@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'kapitany7584', 0, '12C'),
 (18, 'gvrsjn@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'heewgofz2', 0, '12A'),
@@ -224,18 +219,8 @@ INSERT INTO `felhasznalok` (`id`, `email`, `jelszo`, `felhasznaloNev`, `jog`, `o
 (21, 'bali78953nt7584@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'gjdklgdn54', 0, '12C'),
 (22, 'bali45nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'TRza1', 0, '12C'),
 (23, 'balahaint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'videoinfo1', 0, '12C'),
-(24, 'bali7843nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'kurvaanyad', 0, '12C'),
-(25, 'b2323alint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'joLesz1', 0, '12C'),
-(26, 'ba3232lint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'balint6748', 0, '12C'),
-(27, 'bali32nt@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'miertnemjo1', 0, '12C'),
-(28, 'baewrwlint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'jkjrg5632', 0, '12C'),
-(29, 'b323alint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'ztrui54', 0, '12C'),
-(30, 'balin2w12t7584@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'namivan23', 0, '12C'),
-(31, 'ba343lint@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'mostmarJO1', 0, '12C'),
-(32, 'zsofika@gmail.com', 'ef28a6f147d822cdc65df689b118390d8245064e79d889386436bad6db42f9fd', 'Zsófika10', 0, '12C'),
 (33, 'moze1s.bence@ckik.hu', 'ec30798e6fac5c0e93fdb109394b20f57c513fcce72136766f9ac95e1a1a1a7c', 'KisHuszar', 1, '12C'),
-(34, 'moz23243e1s.bence@ckik.hu', '73fa91258222403be21ddde87c0a098e9fa882d3b83d23c520fba2ef52d6ec3a', 'K12isB43ela', 0, '12C'),
-(35, 'moze143qs.bence@ckik.hu', '4234d001c3122d591ca1afd9af35a4aa83d2827896e12f174eb9b3be248fa108', 'KisHuszarwef4tr4t', 0, '9A');
+(36, 'KisPista.ckik@gmail.com', '4d4e060109bc8dbcc72b33670190035c2f2f5b772fd099019140a8816eca62bc', 'KisPista', 0, '12C');
 
 -- --------------------------------------------------------
 
@@ -379,7 +364,7 @@ ALTER TABLE `feladatsor`
 -- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT a táblához `osztalyok`
