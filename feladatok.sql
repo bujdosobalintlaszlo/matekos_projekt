@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Máj 27. 10:22
--- Kiszolgáló verziója: 10.4.20-MariaDB
--- PHP verzió: 8.0.9
+-- Létrehozás ideje: 2024. Máj 28. 15:02
+-- Kiszolgáló verziója: 10.4.27-MariaDB
+-- PHP verzió: 8.0.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `feladatesfeladatsorkapcs` (
   `feladatId` int(11) NOT NULL,
   `feladatsorId` int(11) NOT NULL,
-  `FeladatNev` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `FeladatNev` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -82,6 +82,7 @@ INSERT INTO `feladatesfeladatsorkapcs` (`feladatId`, `feladatsorId`, `FeladatNev
 (4, 26, 'pontosan'),
 (4, 29, 'efefvergrgrfdvregrgr'),
 (4, 30, 'üjuigtdr5tfvhg'),
+(4, 34, 'Próba dolgozat 05_28'),
 (5, 7, 'IgenJa'),
 (5, 19, 'asdf'),
 (5, 20, 'asdfasdf'),
@@ -92,12 +93,16 @@ INSERT INTO `feladatesfeladatsorkapcs` (`feladatId`, `feladatsorId`, `FeladatNev
 (6, 7, 'IgenJa'),
 (6, 19, 'asdf'),
 (6, 25, '2024.04.29'),
+(6, 34, 'Próba dolgozat 05_28'),
 (7, 7, 'IgenJa'),
 (7, 25, '2024.04.29'),
 (8, 25, '2024.04.29'),
 (15, 25, '2024.04.29'),
 (19, 25, '2024.04.29'),
-(24, 27, 'Dolgozat _ 2');
+(24, 27, 'Dolgozat _ 2'),
+(67, 34, 'Próba dolgozat 05_28'),
+(70, 34, 'Próba dolgozat 05_28'),
+(71, 34, 'Próba dolgozat 05_28');
 
 -- --------------------------------------------------------
 
@@ -120,7 +125,8 @@ CREATE TABLE `feladatesfelhasznalokapcs` (
 
 INSERT INTO `feladatesfelhasznalokapcs` (`feladatsorId`, `felhasznaloId`, `megoldasiIdo`, `pontszam`, `szazalek`, `megoldasdatum`) VALUES
 (24, 33, '00:00:00', 0, 0, '2024-05-23 08:58:24'),
-(25, 1, '00:00:05', 5, 6, '2024-05-01 10:18:52');
+(25, 1, '00:00:05', 5, 6, '2024-05-01 10:18:52'),
+(34, 33, '00:00:15', 11, 18, '2024-05-28 14:46:48');
 
 -- --------------------------------------------------------
 
@@ -131,11 +137,11 @@ INSERT INTO `feladatesfelhasznalokapcs` (`feladatsorId`, `felhasznaloId`, `megol
 CREATE TABLE `feladatok` (
   `id` int(11) NOT NULL,
   `temakorID` int(11) DEFAULT NULL,
-  `megoldas` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
+  `megoldas` varchar(150) NOT NULL,
   `nehezseg` int(11) NOT NULL,
   `pontszam` int(11) NOT NULL,
-  `nev` varchar(250) COLLATE utf8_hungarian_ci DEFAULT NULL,
-  `feladat` varchar(500) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `nev` varchar(250) DEFAULT NULL,
+  `feladat` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -149,51 +155,33 @@ INSERT INTO `feladatok` (`id`, `temakorID`, `megoldas`, `nehezseg`, `pontszam`, 
 (4, 2, '1', 7, 5, '2012 máj.6 13.', '2x=2'),
 (5, 10, '12', 3, 5, '2021 máj.12 15.', 'van egy vagy két négyzet oké?'),
 (6, 17, '12', 2, 51, '2021 máj.12 15.', 'van egy vagy két négyzet oké?'),
-(7, 4, '12', 0, 15, 'Ez egy feladat', '$\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$'),
+(7, 4, '12', 0, 15, '2021 máj', '$\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$'),
 (8, 14, '$2^3$*3*7*11', 0, 2, '2023. október 17. (I.) 1.feladat', 'Adja meg az 1848 prímtényezős felbontását!'),
 (9, 15, '10', 0, 2, '2023. október 17. (I.) 2.feladat', 'Egy építkezésre teherautókkal szállítják a homokot. Öt egyforma teherautó mindegyikének nyolcszor kellene fordulnia, hogy az összes homokot odaszállítsák. Hány fordulóval\r\ntudná odaszállítani ugyanezt a mennyiségű homokot négy ugyanekkora teherautó?'),
 (10, 7, '$C', 0, 2, '2023. október 17. (I.) 4.feladat', 'Válassza ki az alábbi, a valós számok halmazán értelmezett függvények közül azt,\r\namelyik nem vesz fel negatív értéket! A válasz formátuma a következő: Pl.: A'),
-(11, 15, '300FT', 0, 2, '2023. október 17. (I.) 5.feladat', 'Egy autók bérbeadásával foglalkozó cég honlapja szerint ha legfeljebb 5 napra bérlünk\r\negy bizonyos típust, akkor a bérlés díja 7500 Ft/nap. Ha legalább 6 napra béreljük\r\nugyanezt a típust, akkor a bérlés díja csak 6300 Ft/nap.\r\nMennyivel magasabb a teljes bérleti díj, ha 5 nap helyett 6 napra béreljük ezt a típust? A válasz formátuma: 100FT'),
 (12, 15, '300FT', 0, 2, '2023. október 17. (I.) 5.feladat', 'Egy autók bérbeadásával foglalkozó cég honlapja szerint ha legfeljebb 5 napra bérlünk\r\negy bizonyos típust, akkor a bérlés díja 7500 Ft/nap. Ha legalább 6 napra béreljük\r\nugyanezt a típust, akkor a bérlés díja csak 6300 Ft/nap.\r\nMennyivel magasabb a teljes bérleti díj, ha 5 nap helyett 6 napra béreljük ezt a típust? A válasz formátuma: 100FT'),
-(13, 15, '3244', 1, 8, 'felfsf', 'fhleífhshf'),
-(14, 15, '32442', 2, 8, 'felfsfhguihidru', 'fhleífhshf'),
-(15, 15, '32442', 3, 8, 'felfsfhguihidruzt', 'fhleífhshf'),
-(16, 15, '32442', 2, 8, 'felfsfhguihidruzt1', 'fhleífhshf'),
-(17, 15, '32442', 2, 8, 'felfsfhguihidruzt2', 'fhleífhshf'),
-(18, 15, '32442', 1, 8, 'felfsfhguihidruzt25', 'fhleífhshf'),
-(19, 10, '1', 1, 1, 'Próba', '$log_2(5)=0$'),
-(21, 1, '12', 0, 12, '12', '12'),
+(15, 15, '32442', 3, 8, '2022', 'fhleífhshf'),
+(19, 10, '1', 1, 1, '2021', '$log_2(5)=0$'),
+(21, 1, '12', 0, 12, '2021-2', '12'),
 (22, 2, 'hamis', 0, 1, 'Teszt-2024.05.01', '$lg(2)$ + 30 = 25'),
-(23, 1, '12', 1, 12, '13', '12'),
+(23, 1, '12', 1, 12, '2023-3', '12'),
 (24, 1, '2', 0, 19899, 'Mi a 2?', '2'),
-(25, 6, '1', 1, 12, 'Kis feladat', 'awdwdefgegee'),
-(26, 2, '3', 0, 1, 'tzjhztjzjzt', 'wdfewfefegge'),
-(38, 16, '12', 1, 12, '12', '12'),
-(39, 16, '12', 2, 12, 'e21ed21', 'e1e1'),
-(40, 14, '12', 2, 1111, '1213', '3232dewfewf'),
-(41, 15, '124', 1, 5, 'reht', 'regre'),
-(42, 13, '8', 1, 12, '53534', 'fdbgfrghrtghrt'),
-(43, 7, '9', 1, 1, '54', 'ztuzthh'),
-(44, 4, '2', 0, 1, 'abcdefghijklmnop', 'abcdefghijklmnopq'),
-(45, 5, '2', 0, 1, 'bcdefghijklmnop', 'bcdefghijklmnopq'),
-(46, 9, '2', 0, 1, 'cdefghijklmnopq', 'cdefghijklmnopqr'),
-(47, 8, '2', 0, 1, 'defghijklmnopqr', 'defghijklmnopqrs'),
-(48, 1, '2', 0, 1, 'efghijklmnopqrs', 'efghijklmnopqrst'),
-(49, 3, '2', 0, 1, 'fghijklmnopqrst', 'fghijklmnopqrstu'),
-(50, 10, '2', 0, 1, 'ghijklmnopqrstu', 'ghijklmnopqrstuv'),
-(51, 7, '2', 0, 1, 'hijklmnopqrstuv', 'hijklmnopqrstuvw'),
-(52, 6, '2', 0, 1, 'ijklmnopqrstuvw', 'ijklmnopqrstuvwx'),
-(53, 2, '2', 0, 1, 'jklmnopqrstuvwx', 'jklmnopqrstuvwxy'),
-(54, 4, '2', 0, 1, 'ab', 'abc'),
-(55, 5, '2', 0, 1, 'de', 'def'),
-(56, 9, '2', 0, 1, 'gh', 'ghi'),
-(57, 8, '2', 0, 1, 'ij', 'ijk'),
-(58, 1, '2', 0, 1, 'kl', 'lmn'),
-(59, 3, '2', 0, 1, 'op', 'pqr'),
-(60, 10, '2', 0, 1, 'st', 'tuv'),
-(61, 7, '2', 0, 1, 'wx', 'xyz'),
-(62, 6, '2', 0, 1, 'yz', 'yza'),
-(63, 2, '2', 0, 1, 'ab', 'abc');
+(40, 14, '12', 2, 1111, '2024-6', '3232dewfewf'),
+(44, 4, '2', 0, 1, '2024-1', 'abcdefghijklmnopq'),
+(45, 5, '2', 0, 1, '2024-2', 'bcdefghijklmnopq'),
+(46, 9, '2', 0, 1, '2024-3', 'cdefghijklmnopqr'),
+(47, 8, '2', 0, 1, '2024-4', 'defghijklmnopqrs'),
+(48, 1, '2', 0, 1, '2024-5', 'efghijklmnopqrst'),
+(49, 3, '2', 0, 1, 'Példa 1', 'fghijklmnopqrstu'),
+(50, 10, '2', 0, 1, 'Gyakorló', 'ghijklmnopqrstuv'),
+(51, 7, '2', 0, 1, 'Gyakorló 2', 'hijklmnopqrstuvw'),
+(52, 6, '2', 0, 1, 'Gyakorló 1', 'ijklmnopqrstuvwx'),
+(53, 2, '2', 0, 1, 'Példa 2', 'jklmnopqrstuvwxy'),
+(65, 12, '17', 0, 2, 'Sorozat első tagja', 'Összeadtunk ötvenöt egymást követő pozitív páratlan számot, az összeg\r\nértéke 3905.Melyik volt az összegben az első szám?'),
+(66, 18, '0.14', 0, 2, 'Tombola húzás', 'Egy rendezvényen 150 tombolajegyet adtak el. Ági 21-et vásárolt.\nMekkora annak a valószínűsége, hogy Ági nyer, ha egy nyereményt\nsorsolnak ki? (A jegyek nyerési esélye egyenlő.) '),
+(67, 18, '0.2', 0, 2, 'Belépés az ajtón', 'Egy öttagú társaság egymás után lép be egy ajtón. Mekkora a\nvalószínűsége, hogy Anna, a társaság egyik tagja, elsőnek lép be az ajtón?'),
+(70, 6, '5', 0, 2, 'Logaritmus', 'Adja meg x értékét, ha $2^{x-1}=16$'),
+(71, 6, '1.5', 0, 2, 'Logaritmus - 2', 'Oldja meg az alábbi egyenletet a valós számok halmazán! Válaszát\ntizedes tört alakban adja meg!\n$4^{x} = 8$ ');
 
 -- --------------------------------------------------------
 
@@ -207,7 +195,7 @@ CREATE TABLE `feladatsor` (
   `dolgozatE` int(11) NOT NULL,
   `tanarId` int(11) NOT NULL,
   `hatarido` date DEFAULT NULL,
-  `osztaly` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `osztaly` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -246,7 +234,8 @@ INSERT INTO `feladatsor` (`id`, `idoKorlat`, `dolgozatE`, `tanarId`, `hatarido`,
 (30, '20:20:00', 1, 33, '2222-02-02', 'Osztály választó '),
 (31, '11:11:00', 1, 33, '1111-11-11', 'Osztály választó '),
 (32, '10:10:00', 1, 33, '2010-01-01', 'Osztály választó '),
-(33, '10:10:00', 1, 33, '1111-04-03', '9C');
+(33, '10:10:00', 1, 33, '1111-04-03', '9C'),
+(34, '00:30:00', 1, 33, '2025-08-10', '12C');
 
 -- --------------------------------------------------------
 
@@ -270,7 +259,11 @@ INSERT INTO `felhaszesfeladkapcs` (`felhasznaloId`, `feladatId`, `megoldIdo`) VA
 (1, 6, '2024-04-05 08:09:00'),
 (1, 19, '2024-04-15 10:24:00'),
 (16, 12, '2024-04-15 10:20:00'),
-(33, 1, '2024-05-23 08:04:00');
+(33, 1, '2024-05-23 08:04:00'),
+(33, 21, '2024-05-28 12:48:00'),
+(33, 67, '2024-05-28 12:41:00'),
+(33, 70, '2024-05-28 12:40:00'),
+(33, 71, '2024-05-28 12:40:00');
 
 -- --------------------------------------------------------
 
@@ -280,11 +273,11 @@ INSERT INTO `felhaszesfeladkapcs` (`felhasznaloId`, `feladatId`, `megoldIdo`) VA
 
 CREATE TABLE `felhasznalok` (
   `id` int(11) NOT NULL,
-  `email` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
-  `jelszo` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
-  `felhasznaloNev` varchar(40) COLLATE utf8_hungarian_ci NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `jelszo` varchar(150) NOT NULL,
+  `felhasznaloNev` varchar(40) NOT NULL,
   `jog` int(11) NOT NULL,
-  `osztaly` varchar(3) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `osztaly` varchar(3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -332,7 +325,7 @@ INSERT INTO `felhasznalok` (`id`, `email`, `jelszo`, `felhasznaloNev`, `jog`, `o
 CREATE TABLE `osztalyok` (
   `id` int(11) NOT NULL,
   `osztaly` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- A tábla adatainak kiíratása `osztalyok`
@@ -362,7 +355,7 @@ INSERT INTO `osztalyok` (`id`, `osztaly`) VALUES
 
 CREATE TABLE `temakor` (
   `id` int(11) NOT NULL,
-  `temakor` text COLLATE utf8_hungarian_ci DEFAULT NULL
+  `temakor` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -453,13 +446,13 @@ ALTER TABLE `temakor`
 -- AUTO_INCREMENT a táblához `feladatok`
 --
 ALTER TABLE `feladatok`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT a táblához `feladatsor`
 --
 ALTER TABLE `feladatsor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT a táblához `felhasznalok`
